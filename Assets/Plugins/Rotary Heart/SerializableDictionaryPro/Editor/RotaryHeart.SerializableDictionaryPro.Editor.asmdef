@@ -1,0 +1,11 @@
+{
+    "name": "RotaryHeart.SerializableDictionary.Editor",
+    "references": [
+        "RotaryHeart.SerializableDictionary",
+        "RotaryHeart"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
