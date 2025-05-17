@@ -1,7 +1,8 @@
 ﻿using System.Collections;
+using Infrastructure;
 using UnityEngine;
 
-namespace Infrastructure
+namespace Game.Infrastructure
 {
     public class CoroutineStarter : MonoBehaviour, ICoroutineStarter
     {
