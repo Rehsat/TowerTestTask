@@ -2,7 +2,7 @@
 using RotaryHeart.Lib.SerializableDictionaryPro;
 using UnityEngine;
 
-namespace Game.Core.Figures
+namespace Game.Core.Figures.Configs
 {
     [CreateAssetMenu(menuName = "GameConfigs/FigureSpriteByColorContainer", fileName = "FigureSpriteByColorContainer")]
     public class FigureSpriteByColorContainer : ScriptableObject, IFigureSpriteByColorContainer

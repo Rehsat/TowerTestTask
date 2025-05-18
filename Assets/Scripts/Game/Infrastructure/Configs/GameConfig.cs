@@ -1,3 +1,4 @@
+using Game.Core.Figures.Configs;
 using Game.Infrastructure.AssetsManagement;
 using UnityEngine;
 
@@ -12,6 +13,10 @@ namespace Game.Infrastructure.Configs
     public class GameConfig : ScriptableObject, IGameConfig
     {
         [SerializeField] private PrefabsContainer _prefabsContainer;
+        [SerializeField] private FigureSpriteByColorContainer _figureSpriteByColor;
+        [SerializeField] private FigureListConfigById figureListConfigById;
         public IPrefabsContainer PrefabsContainer => _prefabsContainer;
+        public IFigureSpriteByColorContainer FigureSpriteByColorContainer => _figureSpriteByColor;
+        public IFigureListConfigById StartFigureListConfigById => figureListConfigById;
     }
 }

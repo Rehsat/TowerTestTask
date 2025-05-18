@@ -1,7 +1,7 @@
 using Game.Core.Figures.Data;
 using UnityEngine;
 
-namespace Game.Core.Figures
+namespace Game.Core.Figures.Configs
 {
     public interface IFigureSpriteByColorContainer
     {

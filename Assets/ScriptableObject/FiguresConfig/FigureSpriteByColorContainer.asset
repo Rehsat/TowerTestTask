@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dcf8bedd01c495ba4521f84aa83a10c, type: 3}
+  m_Name: FigureSpriteByColorContainer
+  m_EditorClassIdentifier: 
+  _figureSprites:
+    m_val: 7
+    m_keys: 000000000100000002000000030000000400000005000000
+    m_values:
+    - {fileID: 0}
+    - {fileID: 429577413, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: -952745520, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: -71834725, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: -1565572723, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1863301824, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}

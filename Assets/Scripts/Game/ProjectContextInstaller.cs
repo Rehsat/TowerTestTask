@@ -1,3 +1,4 @@
+using Game.Core.Figures.Configs;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
 using Game.Core.Figures.View.UI;
@@ -37,6 +38,8 @@ namespace Game
         private void InstallConfig(IGameConfig gameConfig)
         {
             Container.Bind<IPrefabsContainer>().FromInstance(gameConfig.PrefabsContainer).AsSingle();
+            Container.Bind<IFigureSpriteByColorContainer>().FromInstance(gameConfig.FigureSpriteByColorContainer).AsSingle();
+            Container.Bind<IFigureListConfigById>().FromInstance(gameConfig.StartFigureListConfigById).AsSingle();
         }
         
         private void InstallInfrastructure()
@@ -49,10 +52,12 @@ namespace Game
         {
             Container.Bind<IFactory<Canvas>>().To<CanvasFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FiguresScrollView>>().To<FigureScrollViewFactory>().FromNew().AsSingle();
-            
+
+            Container.Bind<IFactory<FigureConfig, FigureData>>().To<FigureDataFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FigureData, FigureUI>>().To<FigureUiViewFactory>().FromNew().AsSingle();
         }
 
+// TODO: Поофиксит разрешение
         private void InstallServices()
         {
             Container.Bind<IInputService>().To<InputService>().FromNew().AsSingle();

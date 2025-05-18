@@ -7,7 +7,9 @@ namespace Game.Core.Figures.Configs
     [Serializable]
     public struct FigureConfig
     {
-        [field: SerializeField] public Figure FigureType { get; }
-        [field: SerializeField] public FigureColor FigureColor { get; }
+        [SerializeField] private Figure _figureType;
+        [SerializeField] private FigureColor _figureColor;
+        public Figure FigureType => _figureType;
+        public FigureColor FigureColor => _figureColor;
     }
 }

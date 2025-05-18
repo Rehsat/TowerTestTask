@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EasyFramework.ReactiveEvents;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
@@ -47,10 +48,14 @@ namespace Game.Core.Figures.View.UI
                 .SubscribeWithSkip(HandleInteractWithFigure)
                 .AddTo(_compositeDisposable);
             
+            foreach (var figureData in _listOfScrollFigures.FigureDatas)
+                SpawnView(figureData);
             _listOfScrollFigures.FigureDatas
                 .ObserveAdd()
                 .Subscribe(newData => SpawnView(newData.Value))
                 .AddTo(_compositeDisposable);
+            
+            _figureUIScrollView.SetObjectsToScroll(_figureUis.Values.ToList());
         }
 
         private void HandleInteractWithFigure(FigureData figureData)

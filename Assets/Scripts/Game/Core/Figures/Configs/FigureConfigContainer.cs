@@ -2,8 +2,10 @@
 
 namespace Game.Core.Figures.Configs
 {
-    public class FigureConfigContainer : ScriptableObject
+    [CreateAssetMenu(menuName = "GameConfigs/FigureConfigContainer", fileName = "FigureConfigContainer")]
+    public class FigureConfigContainer : ScriptableObject, IFiguresConfigContainer
     {
-        [field: SerializeField] public FigureConfig FigureConfig{ get; }
+        [SerializeField] private FigureConfig _figureConfig;
+        public FigureConfig FigureConfig => _figureConfig;
     }
 }
