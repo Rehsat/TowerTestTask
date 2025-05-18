@@ -92,6 +92,37 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407760630684928795}
   m_Enabled: 1
+--- !u!1 &2887337279189556928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 429221886523989163}
+  m_Layer: 0
+  m_Name: CanvasesRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &429221886523989163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2887337279189556928}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4834495712714790575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4727906457715257417
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,6 +134,8 @@ GameObject:
   - component: {fileID: 4834495712714790575}
   - component: {fileID: 3321167768157102862}
   - component: {fileID: 716693253800082601}
+  - component: {fileID: 2068164361556290826}
+  - component: {fileID: 1934009209832485854}
   - component: {fileID: 3679039199588043963}
   m_Layer: 0
   m_Name: ProjectContext
@@ -125,6 +158,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6798209341115788953}
+  - {fileID: 429221886523989163}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3321167768157102862
@@ -168,7 +202,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aadadba65a880c47a6bcd9840156b51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: c5899111477e5234fb10d02e8aba01ff, type: 2}
   _coroutineStarter: {fileID: 3679039199588043963}
+  _cameraService: {fileID: 2068164361556290826}
+  _canvasLayersService: {fileID: 1934009209832485854}
+--- !u!114 &2068164361556290826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4727906457715257417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9615efc9acf14a92911e615a82780274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainCamera: {fileID: 5536178502095037974}
+--- !u!114 &1934009209832485854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4727906457715257417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b022510fb074d12b9fb9a47108cebb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvasesRoot: {fileID: 429221886523989163}
+  _layersOrder: 0000000001000000
 --- !u!114 &3679039199588043963
 MonoBehaviour:
   m_ObjectHideFlags: 0

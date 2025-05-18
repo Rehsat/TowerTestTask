@@ -24,7 +24,7 @@ namespace Game.Infrastructure.StateMachine.GameStates
 
         private void OnEnterMainScene()
         {
-            //_stateMachine.EnterState<>();
+            _stateMachine.EnterState<TowerBuildState>();
         }
         public void Exit()
         {

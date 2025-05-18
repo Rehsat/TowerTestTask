@@ -2,11 +2,10 @@
 {
     public enum Prefab
     {
-        WeatherUI = 0,
-        PanelSwitchView = 1,
-        DogList = 2,
-        DogButtonView = 3,
-        DogBreedDescriptionPopUp = 4
+        None = 0,
+        Canvas = 1,
+        FigureUI = 2,
+        FiguresScroll = 3
         
     }
 }
