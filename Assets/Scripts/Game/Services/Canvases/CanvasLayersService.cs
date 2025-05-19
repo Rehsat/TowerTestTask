@@ -28,6 +28,8 @@ namespace Game.Services.Canvases
                 var canvas = _canvasFactory.Create();
                 canvas.transform.parent = _canvasesRoot;
                 canvas.sortingOrder = i;
+                canvas.gameObject.name = layer.ToString();
+                
                 _canvases.Add(layer, canvas);
             }
         }

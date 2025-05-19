@@ -13,27 +13,27 @@ using UnityEngine;
 
 namespace Game.Core.Figures.View.UI
 {
-    public class FiguresScrollPresenter : IDisposable
+    public class FiguresScrollPresenter : IDisposable, IDragFigureDataCreator
     {
         private readonly IListOfFiguresData _listOfScrollFigures;
         private readonly IFactory<FigureData, FigureUI> _figureUIFactory;
-        private readonly IScrollView<FigureUI> _figureUIScrollView;
-        private readonly IDragService _dragService;
+        private readonly ICollectionView<FigureUI> _figureUICollectionView;
 
         private Dictionary<FigureData, FigureUI> _figureUis;
         private CompositeDisposable _compositeDisposable;
         private ReactiveEvent<FigureData> _onPlayerInteractFigureView;
-
+        private ReactiveEvent<DragFigureData> _onNewDragFigureData;
+        
+        public IReadOnlyReactiveEvent<DragFigureData> OnNewFigureData => _onNewDragFigureData;
         public FiguresScrollPresenter(
             IListOfFiguresData listOfScrollFigures,
             IFactory<FigureData, FigureUI> figureUIFactory,
-            IScrollView<FigureUI> figureUIScrollView,
-            IDragService dragService)
+            ICollectionView<FigureUI> figureUICollectionView)
         {
             _listOfScrollFigures = listOfScrollFigures;
             _figureUIFactory = figureUIFactory;
-            _figureUIScrollView = figureUIScrollView;
-            _dragService = dragService;
+            _figureUICollectionView = figureUICollectionView;
+            _onNewDragFigureData = new ReactiveEvent<DragFigureData>();
             
             _figureUis = new Dictionary<FigureData, FigureUI>();
             _onPlayerInteractFigureView = new ReactiveEvent<FigureData>();
@@ -55,12 +55,35 @@ namespace Game.Core.Figures.View.UI
                 .Subscribe(newData => SpawnView(newData.Value))
                 .AddTo(_compositeDisposable);
             
-            _figureUIScrollView.SetObjectsToScroll(_figureUis.Values.ToList());
+            _figureUICollectionView.SetListOfObjects(_figureUis.Values.ToList());
         }
 
         private void HandleInteractWithFigure(FigureData figureData)
         {
+            if (figureData == null)
+            {
+                Debug.LogError("Called null data");
+                return;
+            }
             
+            IInteractEnabable interactableRootUI = null;
+            if (_figureUICollectionView is IInteractEnabable interactable)
+            {
+                interactableRootUI = interactable;
+                interactableRootUI.SetInteractEnableState(false);
+            }
+            void OnComplete(DropResult dropResult)
+            {
+                interactableRootUI?.SetInteractEnableState(true);
+            }
+
+            StartDragFigure(figureData, OnComplete);
+        }
+
+        private void StartDragFigure(FigureData figureData, Action<DropResult> onComplete)
+        {
+            var dragFigureData = new DragFigureData(figureData, onComplete);
+            _onNewDragFigureData.Notify(dragFigureData);
         }
 
         private void SpawnView(FigureData figureData)
@@ -80,24 +103,6 @@ namespace Game.Core.Figures.View.UI
         {
             _compositeDisposable?.Dispose();
             _onPlayerInteractFigureView?.Dispose();
-        }
-    }
-
-    public class DragFigureData : IDraggable
-    {
-        public RectTransform TransformToDrag { get; }
-
-        public DragFigureData(Action onFail, Action onComplete)
-        {
-            
-        }
-        public void OnDragStart()
-        {
-            
-        }
-
-        public void OnDragComplete()
-        {
         }
     }
 }

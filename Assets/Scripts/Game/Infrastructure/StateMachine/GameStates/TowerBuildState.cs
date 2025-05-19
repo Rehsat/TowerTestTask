@@ -6,6 +6,7 @@ using Game.Services.Canvases;
 using Game.Services.DragAndDrop;
 using Game.Services.FiguresCollections;
 using Infrastructure.StateMachine;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -13,26 +14,28 @@ namespace Game.Infrastructure.StateMachine.GameStates
 {
     public class TowerBuildState : IGameState
     {
+        private readonly IDragDataHandleService _dragDataHandleService;
         private readonly IFactory<FigureData, FigureUI> _figureUIFactory;
         private readonly IFactory<FiguresScrollView> _figureScrollViewFactory;
-        private readonly IDragService _dragService;
         private readonly IFiguresListsContainerService _figuresListsContainerService;
         private readonly ICanvasLayersService _canvasLayersService;
 
         private FiguresScrollView _figuresScrollView;
+        private FiguresScrollPresenter _figuresScrollPresenter;
+        private CompositeDisposable _compositeDisposable;
 
         private bool _wasInitialized;
         public TowerBuildState(
-            IDragService dragService,
+            IDragDataHandleService dragDataHandleService,
             IFiguresListsContainerService figuresListsContainerService,
             ICanvasLayersService canvasLayersService,
             IFactory<FigureData, FigureUI> figureUIFactory,
             IFactory<FiguresScrollView> figureScrollViewFactory
             )
         {
+            _dragDataHandleService = dragDataHandleService;
             _figureUIFactory = figureUIFactory;
             _figureScrollViewFactory = figureScrollViewFactory;
-            _dragService = dragService;
             _figuresListsContainerService = figuresListsContainerService;
             _canvasLayersService = canvasLayersService;
         }
@@ -41,6 +44,11 @@ namespace Game.Infrastructure.StateMachine.GameStates
             Debug.LogError(123);
             if(_wasInitialized == false)
                 Initialize();
+
+            _compositeDisposable = new CompositeDisposable();
+            _figuresScrollPresenter.OnNewFigureData
+                .SubscribeWithSkip(_dragDataHandleService.HandleDragData)
+                .AddTo(_compositeDisposable);
         }
 
         private void Initialize()
@@ -57,18 +65,19 @@ namespace Game.Infrastructure.StateMachine.GameStates
             _figuresScrollView.transform.parent = targetCanvas.transform;
             _figuresScrollView.transform.localPosition = Vector3.zero;
             
-           var squaresScrollPresenter = new FiguresScrollPresenter(
+           _figuresScrollPresenter = new FiguresScrollPresenter(
                listOfFigures,
                _figureUIFactory,
-               _figuresScrollView,
-               _dragService
+               _figuresScrollView
                );
         }
 
         public void Exit()
         {
             if(_wasInitialized == false) return;
+            
             _figuresScrollView.gameObject.SetActive(false);
+            _compositeDisposable?.Dispose();
         }
 
         public void SetStateMachine(GameStateMachine stateMachine)

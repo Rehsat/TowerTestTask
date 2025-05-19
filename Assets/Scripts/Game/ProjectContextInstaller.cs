@@ -25,7 +25,11 @@ namespace Game
         [SerializeField] private CoroutineStarter _coroutineStarter;
         [SerializeField] private CameraService _cameraService;
         [SerializeField] private CanvasLayersService _canvasLayersService;
-
+/*
+        Приветствую великий код-читающий, во многих местах думаю есть оверинжениринг для этой задачи, но сделан он был осознанно 
+        из-за требования к "обновляемости" например стейт машина тут не особо нужна, но если для обновляемости - самое то
+        Приятного прочтения) Буду крайне благодарен за фидбек, а за подробный фидбек - буду руки целовать (по желанию)
+*/      
         public override void InstallBindings()
         {
             InstallConfig(_config);
@@ -35,6 +39,8 @@ namespace Game
             InstallStateMachine();
         }
 
+        // В теории есть возможность заменить инстансы другими классами с тем же интерфейсом, тем самым поменять способ конфигураци.
+        // Даже с сервера подгружать можно, если соответствующий класс создать, так что надеюсь выполнил требование 3 правильно
         private void InstallConfig(IGameConfig gameConfig)
         {
             Container.Bind<IPrefabsContainer>().FromInstance(gameConfig.PrefabsContainer).AsSingle();
@@ -64,6 +70,7 @@ namespace Game
             Container.Bind<ICameraService>().To<CameraService>().FromInstance(_cameraService).AsSingle();
             Container.Bind<ICanvasLayersService>().To<CanvasLayersService>().FromInstance(_canvasLayersService).AsSingle();
             Container.Bind<IDragService>().To<DragAndDropService>().FromNew().AsSingle();
+            Container.Bind<IDragDataHandleService>().To<DragDataHandleService>().FromNew().AsSingle();
             Container.Bind<IFiguresListsContainerService>().To<FiguresListsContainerService>().FromNew().AsSingle();
         }
 
