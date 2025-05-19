@@ -35,6 +35,8 @@ namespace Game.Core.Figures
         private readonly RectTransform _transformToDrag;
         private readonly ParticleSystem _failParticle;
         public RectTransform TransformToDrag => _transformToDrag;
+        public IDragData DragFigureData => _dragFigureData;
+
         public DraggableView(IDragData dragFigureData, RectTransform transformToDrag, ParticleSystem failParticle)
         {
             _dragFigureData = dragFigureData;

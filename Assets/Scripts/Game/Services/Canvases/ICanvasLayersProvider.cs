@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Services.Canvases
 {
-    public interface ICanvasLayersService
+    public interface ICanvasLayersProvider
     {
         public Canvas GetCanvasByLayer(CanvasLayer canvasLayer);
     }

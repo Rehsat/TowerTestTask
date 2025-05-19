@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Core
 {
-    [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(Collider2D))]
     public class PlayerTouchDetector : MonoBehaviour, ITouchDetector
     {
         private ReactiveTrigger _onTouch;

@@ -5,7 +5,9 @@ namespace Game.Factories.Figures
 {
     public class FigureScrollViewFactory : BaseSimpleFactory<FiguresScrollView>
     {
-        public FigureScrollViewFactory(IPrefabsContainer prefabsContainer) : base(prefabsContainer)
+        public FigureScrollViewFactory(
+            IPrefabsContainer prefabsContainer,
+            IPrefabsTransformContainer prefabsTransformContainer) : base(prefabsContainer, prefabsTransformContainer)
         {
         }
 

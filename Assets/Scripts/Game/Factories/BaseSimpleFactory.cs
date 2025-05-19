@@ -6,14 +6,22 @@ namespace Game.Factories
 {
     public abstract class BaseSimpleFactory<TPrefabType> : IFactory<TPrefabType> where TPrefabType : MonoBehaviour
     {
+        private Transform _spawnPosition;
         private TPrefabType _prefab;
-        public BaseSimpleFactory(IPrefabsContainer prefabsContainer)
+        public BaseSimpleFactory(IPrefabsContainer prefabsContainer, IPrefabsTransformContainer prefabsTransformContainer)
         {
-            _prefab = prefabsContainer.GetPrefabsComponent<TPrefabType>(GetPrefabType());
+            var prefabId = GetPrefabType();
+            _spawnPosition = prefabsTransformContainer.GetPrefabTransform(prefabId);
+            _prefab = prefabsContainer.GetPrefabsComponent<TPrefabType>(prefabId);
         }
         public TPrefabType Create()
         {
-            return Object.Instantiate(_prefab);
+            var instantinatedObject = Object.Instantiate(
+                _prefab, 
+                _spawnPosition, //может быть null, не вижу в этом проблем
+                true);
+
+            return instantinatedObject;
         }
 
         protected abstract Prefab GetPrefabType();

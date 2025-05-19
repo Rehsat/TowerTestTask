@@ -5,7 +5,9 @@
         None = 0,
         Canvas = 1,
         FigureUI = 2,
-        FiguresScroll = 3
+        FiguresScroll = 3,
+        TowerView =  4,
+        FigureSprite = 5,
         
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Game.Core.Figures.Data;
+using Game.Core.Figures.Tower;
 using Game.Core.Figures.UI;
+using Game.Core.Figures.View;
 using Game.Core.Figures.View.UI;
 using Game.Core.UI;
 using Game.Services.Canvases;
@@ -16,37 +18,46 @@ namespace Game.Infrastructure.StateMachine.GameStates
     {
         private readonly IDragDataHandleService _dragDataHandleService;
         private readonly IFactory<FigureData, FigureUI> _figureUIFactory;
+        private readonly IFactory<FigureData, FigureSpriteView> _figureSpriteView;
         private readonly IFactory<FiguresScrollView> _figureScrollViewFactory;
+        private readonly IFactory<TowerView> _towerViewFactory;
         private readonly IFiguresListsContainerService _figuresListsContainerService;
-        private readonly ICanvasLayersService _canvasLayersService;
+        private readonly ICanvasLayersProvider _canvasLayersProvider;
 
         private FiguresScrollView _figuresScrollView;
         private FiguresScrollPresenter _figuresScrollPresenter;
+
+        private TowerView _towerView;
+        private TowerPresenter _towerPresenter;
+        
         private CompositeDisposable _compositeDisposable;
 
         private bool _wasInitialized;
         public TowerBuildState(
             IDragDataHandleService dragDataHandleService,
             IFiguresListsContainerService figuresListsContainerService,
-            ICanvasLayersService canvasLayersService,
+            ICanvasLayersProvider canvasLayersProvider,
             IFactory<FigureData, FigureUI> figureUIFactory,
-            IFactory<FiguresScrollView> figureScrollViewFactory
+            IFactory<FigureData, FigureSpriteView> figureSpriteView,
+            IFactory<FiguresScrollView> figureScrollViewFactory,
+            IFactory<TowerView> towerViewFactory
             )
         {
             _dragDataHandleService = dragDataHandleService;
             _figureUIFactory = figureUIFactory;
+            _figureSpriteView = figureSpriteView;
             _figureScrollViewFactory = figureScrollViewFactory;
+            _towerViewFactory = towerViewFactory;
             _figuresListsContainerService = figuresListsContainerService;
-            _canvasLayersService = canvasLayersService;
+            _canvasLayersProvider = canvasLayersProvider;
         }
         public void Enter()
         {
-            Debug.LogError(123);
             if(_wasInitialized == false)
                 Initialize();
 
             _compositeDisposable = new CompositeDisposable();
-            _figuresScrollPresenter.OnNewFigureData
+            _figuresScrollPresenter.OnNewDragFigureData
                 .SubscribeWithSkip(_dragDataHandleService.HandleDragData)
                 .AddTo(_compositeDisposable);
         }
@@ -54,11 +65,12 @@ namespace Game.Infrastructure.StateMachine.GameStates
         private void Initialize()
         {
             InitializeScrollPresenter();
+            InitializeTowerPresenter();
             _wasInitialized = true;
         }
         private void InitializeScrollPresenter()
         {
-            var targetCanvas = _canvasLayersService.GetCanvasByLayer(CanvasLayer.FiguresScroll);
+            var targetCanvas = _canvasLayersProvider.GetCanvasByLayer(CanvasLayer.FiguresScroll);
             var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Scroll);
             
             _figuresScrollView = _figureScrollViewFactory.Create();
@@ -70,6 +82,14 @@ namespace Game.Infrastructure.StateMachine.GameStates
                _figureUIFactory,
                _figuresScrollView
                );
+        }
+
+        private void InitializeTowerPresenter()
+        {
+            _towerView = _towerViewFactory.Create();
+            var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Tower);
+            
+            _towerPresenter = new TowerPresenter(listOfFigures, _towerView, _figureSpriteView);
         }
 
         public void Exit()

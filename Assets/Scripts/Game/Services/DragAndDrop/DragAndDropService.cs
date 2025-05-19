@@ -25,13 +25,13 @@ namespace Game.Services.DragAndDrop
         public DragAndDropService(
             IInputService inputService, 
             ICameraService cameraService,
-            ICanvasLayersService canvasLayersService)
+            ICanvasLayersProvider canvasLayersProvider)
         {
             _inputService = inputService;
             _cameraService = cameraService;
             _currentDraggable = new ReactiveProperty<IDraggable>();
             _compositeDisposable = new CompositeDisposable();
-            _canvasRectTransform = canvasLayersService
+            _canvasRectTransform = canvasLayersProvider
                 .GetCanvasByLayer(CanvasLayer.DragAndDrop)
                 .GetComponent<RectTransform>();
             
@@ -104,9 +104,15 @@ namespace Game.Services.DragAndDrop
         {
             Vector2 screenPosition = _inputService.PointerPosition;
             Ray ray = _cameraService.MainCamera.ScreenPointToRay(screenPosition);
+            RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+    
+            if(hit.collider == null)
+            {
+                TryDropCurrentDraggable(null);
+                return;
+            }
 
-            if (Physics.Raycast(ray, out RaycastHit hit) &&
-                hit.collider.TryGetComponent<IDropContainer>(out var container))
+            if(hit.collider.TryGetComponent<IDropContainer>(out var container))
                 TryDropCurrentDraggable(container);
             else
                 TryDropCurrentDraggable(null);

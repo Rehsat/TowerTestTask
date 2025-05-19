@@ -1,6 +1,8 @@
 using Game.Core.Figures.Configs;
 using Game.Core.Figures.Data;
+using Game.Core.Figures.Tower;
 using Game.Core.Figures.UI;
+using Game.Core.Figures.View;
 using Game.Core.Figures.View.UI;
 using Game.Factories;
 using Game.Factories.Figures;
@@ -24,7 +26,8 @@ namespace Game
         [SerializeField] private GameConfig _config;
         [SerializeField] private CoroutineStarter _coroutineStarter;
         [SerializeField] private CameraService _cameraService;
-        [SerializeField] private CanvasLayersService _canvasLayersService;
+        [SerializeField] private CanvasLayersProvider canvasLayersProvider;
+        [SerializeField] private PrefabsTransformContainer _prefabsTransformContainer;
 /*
         Приветствую великий код-читающий, во многих местах думаю есть оверинжениринг для этой задачи, но сделан он был осознанно 
         из-за требования к "обновляемости" например стейт машина тут не особо нужна, но если для обновляемости - самое то
@@ -50,6 +53,7 @@ namespace Game
         
         private void InstallInfrastructure()
         {
+            Container.Bind<IPrefabsTransformContainer>().FromInstance(_prefabsTransformContainer).AsSingle();
             Container.Bind<ICoroutineStarter>().To<CoroutineStarter>().FromInstance(_coroutineStarter).AsSingle();
             Container.Bind<ISceneLoader>().To<SceneLoader>().FromNew().AsSingle();
         }
@@ -58,17 +62,18 @@ namespace Game
         {
             Container.Bind<IFactory<Canvas>>().To<CanvasFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FiguresScrollView>>().To<FigureScrollViewFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<TowerView>>().To<TowerViewFactory>().FromNew().AsSingle();
 
             Container.Bind<IFactory<FigureConfig, FigureData>>().To<FigureDataFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FigureData, FigureUI>>().To<FigureUiViewFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<FigureData, FigureSpriteView>>().To<FigureSpriteViewFactory>().FromNew().AsSingle();
         }
 
-// TODO: Поофиксит разрешение
         private void InstallServices()
         {
-            Container.Bind<IInputService>().To<InputService>().FromNew().AsSingle();
+            Container.Bind<ICanvasLayersProvider>().To<CanvasLayersProvider>().FromInstance(canvasLayersProvider).AsSingle();
             Container.Bind<ICameraService>().To<CameraService>().FromInstance(_cameraService).AsSingle();
-            Container.Bind<ICanvasLayersService>().To<CanvasLayersService>().FromInstance(_canvasLayersService).AsSingle();
+            Container.Bind<IInputService>().To<InputService>().FromNew().AsSingle();
             Container.Bind<IDragService>().To<DragAndDropService>().FromNew().AsSingle();
             Container.Bind<IDragDataHandleService>().To<DragDataHandleService>().FromNew().AsSingle();
             Container.Bind<IFiguresListsContainerService>().To<FiguresListsContainerService>().FromNew().AsSingle();

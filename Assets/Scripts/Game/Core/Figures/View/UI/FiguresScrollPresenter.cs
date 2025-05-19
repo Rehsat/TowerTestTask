@@ -24,7 +24,7 @@ namespace Game.Core.Figures.View.UI
         private ReactiveEvent<FigureData> _onPlayerInteractFigureView;
         private ReactiveEvent<DragFigureData> _onNewDragFigureData;
         
-        public IReadOnlyReactiveEvent<DragFigureData> OnNewFigureData => _onNewDragFigureData;
+        public IReadOnlyReactiveEvent<DragFigureData> OnNewDragFigureData => _onNewDragFigureData;
         public FiguresScrollPresenter(
             IListOfFiguresData listOfScrollFigures,
             IFactory<FigureData, FigureUI> figureUIFactory,

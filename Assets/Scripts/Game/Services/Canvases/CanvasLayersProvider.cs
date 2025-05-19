@@ -4,7 +4,7 @@ using Zenject;
 
 namespace Game.Services.Canvases
 {
-    public class CanvasLayersService : MonoBehaviour, ICanvasLayersService
+    public class CanvasLayersProvider : MonoBehaviour, ICanvasLayersProvider
     {
         [SerializeField] private Transform _canvasesRoot;
         [SerializeField] private List<CanvasLayer> _layersOrder;

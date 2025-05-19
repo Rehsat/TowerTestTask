@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using EasyFramework.ReactiveEvents;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
@@ -15,7 +16,7 @@ namespace Game.Core.Figures.View
         private FigureData _figureData;
         private ReactiveEvent<FigureData> _onInteract;
         private CompositeDisposable _compositeDisposable;
-
+        private Tween _placeTween;
         private bool _touchDetectorWasInitialized;
         public void SetSprite(Sprite sprite)
         {
@@ -29,6 +30,20 @@ namespace Game.Core.Figures.View
             
             _figureData = figureData;
             _onInteract = onInteract;
+        }
+
+        public void DoPlaceAnimation()
+        {
+            var resultScale = Vector3.one;
+            if (_placeTween == null)
+                _placeTween = transform
+                    .DOScale(resultScale, 0.3f)
+                    .SetEase(Ease.OutBack);
+            
+            transform.localScale = Vector3.zero;
+            _placeTween
+                .Play()
+                .OnKill((() => transform.localScale = resultScale));
         }
         private void InitializeTouchDetector()
         {
@@ -57,6 +72,14 @@ namespace Game.Core.Figures.View
         private void OnDestroy()
         {
             _compositeDisposable?.Dispose();
+        }
+
+        private void OnValidate()
+        {
+            if (_spriteRenderer == null)
+                _spriteRenderer.GetComponent<SpriteRenderer>();
+            if (_touchDetector == null)
+                _spriteRenderer.GetComponent<PlayerTouchDetector>();
         }
     }
 }
