@@ -165,7 +165,7 @@ namespace Game.Core.Figures.Tower
             var viewToRemove = _figureSpriteViews[index];
             var viewToRemoveCurrentParent = viewToRemove.transform.parent;
             var isLastFigure = _figureSpriteViews.Count - 1 == index ;
-            viewToRemove.DOKill();
+            _figuresAnimator.KillCurrentAnimation();
             
             if (isLastFigure)
             {

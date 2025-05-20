@@ -50,5 +50,9 @@ namespace Game.Core.Figures.Tower
             _figuresAnimationSequence = DOTween.Sequence();
         }
 
+        public void KillCurrentAnimation()
+        {
+            _figuresAnimationSequence?.Kill();
+        }
     }
 }
