@@ -26,7 +26,7 @@ namespace Game.Services.Canvases
                 }
                     
                 var canvas = _canvasFactory.Create();
-                canvas.transform.parent = _canvasesRoot;
+                canvas.transform.SetParent(_canvasesRoot);
                 canvas.sortingOrder = i;
                 canvas.gameObject.name = layer.ToString();
                 

@@ -67,7 +67,7 @@ namespace Game.Services.DragAndDrop
         }
         private void LogFigureDragFail()
         {
-            var listOfLogStrings = new List<string>(){"Ты перетащили фигуру в неподходящее место"};
+            var listOfLogStrings = new List<string>(){"Ты перетащил фигуру в неподходящее место"};
             _onNewLogs.Notify(new LocalizableLogData(listOfLogStrings));
         }
     }

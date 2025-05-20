@@ -19,11 +19,19 @@ namespace Game.Factories
         {
             var instantinatedObject = Object.Instantiate(
                 _prefab, 
-                _spawnPosition,
-                true); //может быть null, не вижу в этом проблем
+                _spawnPosition, //может быть null, не вижу в этом проблем
+                true); 
+            if(instantinatedObject is IConstructable constructable)
+                constructable.Construct();
+            
             return instantinatedObject;
         }
 
         protected abstract Prefab GetPrefabType();
+    }
+
+    public interface IConstructable
+    {
+        public void Construct();
     }
 }

@@ -11,6 +11,7 @@ namespace Game.Core.Figures.Tower
         {
             ResetSequence();
             
+            transformToAnimate.localScale = Vector3.zero;
             var startPosition = transformToAnimate.position;
             
             var jumpTween =
