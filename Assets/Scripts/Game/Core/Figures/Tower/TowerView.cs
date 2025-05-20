@@ -24,6 +24,7 @@ namespace Game.Core.Figures.Tower
         {
             if (lastViewTransform == null)
             {
+                _dropContainer.transform.parent = transform;
                 ResetDropContainer();
                 return;
             }
