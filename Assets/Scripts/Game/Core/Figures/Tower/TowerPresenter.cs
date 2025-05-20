@@ -66,7 +66,6 @@ namespace Game.Core.Figures.Tower
 
         private void HandleNewDroppedObject(IDraggable draggable)
         {
-            Debug.LogError(draggable);
             if (draggable is DraggableView draggableView)
                 if (draggableView.DragFigureData is DragFigureData dragFigureData)
                 {
@@ -121,7 +120,7 @@ namespace Game.Core.Figures.Tower
             
             figureToConnect.parent = figureToConnectWith;
             figureToConnect.localPosition = 
-                new Vector2(xPosition, figureToConnectWith.localScale.y*2);
+                new Vector2(xPosition, figureToConnectWith.localScale.y) * 2;
         }
 
         private void RemoveData(int index)

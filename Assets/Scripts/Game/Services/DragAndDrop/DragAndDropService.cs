@@ -105,14 +105,9 @@ namespace Game.Services.DragAndDrop
             Vector2 screenPosition = _inputService.PointerPosition;
             Ray ray = _cameraService.MainCamera.ScreenPointToRay(screenPosition);
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
-    
-            if(hit.collider == null)
-            {
-                TryDropCurrentDraggable(null);
-                return;
-            }
-
-            if(hit.collider.TryGetComponent<IDropContainer>(out var container))
+            
+            if(hit.collider != null && 
+               hit.collider.TryGetComponent<IDropContainer>(out var container))
                 TryDropCurrentDraggable(container);
             else
                 TryDropCurrentDraggable(null);

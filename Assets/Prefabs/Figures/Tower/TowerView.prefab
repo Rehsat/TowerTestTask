@@ -75,7 +75,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.31, y: 4.69, z: 0.000000008101}
-  m_LocalScale: {x: 7.2084217, y: 6.716938, z: 6.5531106}
+  m_LocalScale: {x: 6, y: 6, z: 6.5531106}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4323776347961656390}
@@ -135,7 +135,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7, y: 1.7}
+  m_Size: {x: 2.5, y: 3}
   m_EdgeRadius: 0
 --- !u!212 &3941718642831847098
 SpriteRenderer:

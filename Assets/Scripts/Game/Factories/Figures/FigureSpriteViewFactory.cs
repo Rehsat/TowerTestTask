@@ -7,9 +7,9 @@ namespace Game.Factories.Figures
     {
         protected override FigureSpriteView ViewPrefab { get; }
 
-        public FigureSpriteViewFactory(IPrefabsContainer prefabsContainer)
+        public FigureSpriteViewFactory(IPrefabsProvider prefabsProvider)
         {
-            ViewPrefab = prefabsContainer.GetPrefabsComponent<FigureSpriteView>(Prefab.FigureSprite);
+            ViewPrefab = prefabsProvider.GetPrefabsComponent<FigureSpriteView>(Prefab.FigureSprite);
         }
     }
 }

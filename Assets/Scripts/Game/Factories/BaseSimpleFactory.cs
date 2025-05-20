@@ -1,4 +1,5 @@
 using Game.Infrastructure.AssetsManagement;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -8,19 +9,18 @@ namespace Game.Factories
     {
         private Transform _spawnPosition;
         private TPrefabType _prefab;
-        public BaseSimpleFactory(IPrefabsContainer prefabsContainer, IPrefabsTransformContainer prefabsTransformContainer)
+        public BaseSimpleFactory(IPrefabsProvider prefabsProvider, IPrefabsTransformContainer prefabsTransformContainer)
         {
             var prefabId = GetPrefabType();
             _spawnPosition = prefabsTransformContainer.GetPrefabTransform(prefabId);
-            _prefab = prefabsContainer.GetPrefabsComponent<TPrefabType>(prefabId);
+            _prefab = prefabsProvider.GetPrefabsComponent<TPrefabType>(prefabId);
         }
         public TPrefabType Create()
         {
             var instantinatedObject = Object.Instantiate(
                 _prefab, 
-                _spawnPosition, //может быть null, не вижу в этом проблем
-                true);
-
+                _spawnPosition,
+                true); //может быть null, не вижу в этом проблем
             return instantinatedObject;
         }
 

@@ -1,6 +1,7 @@
 ﻿using Game.Core.Figures;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
+using Game.Core.Figures.View.UI;
 using UnityEngine;
 using Zenject;
 

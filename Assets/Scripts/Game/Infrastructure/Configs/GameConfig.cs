@@ -12,10 +12,10 @@ namespace Game.Infrastructure.Configs
     [CreateAssetMenu(menuName = "GameConfigs/GameConfig", fileName = "GameConfig")]
     public class GameConfig : ScriptableObject, IGameConfig
     {
-        [SerializeField] private PrefabsContainer _prefabsContainer;
+        [SerializeField] private PrefabsProviderConfig prefabsProviderConfig;
         [SerializeField] private FigureSpriteByColorContainer _figureSpriteByColor;
         [SerializeField] private FigureListConfigById figureListConfigById;
-        public IPrefabsContainer PrefabsContainer => _prefabsContainer;
+        public IPrefabsProvider PrefabsProvider => prefabsProviderConfig;
         public IFigureSpriteByColorContainer FigureSpriteByColorContainer => _figureSpriteByColor;
         public IFigureListConfigById StartFigureListConfigById => figureListConfigById;
     }

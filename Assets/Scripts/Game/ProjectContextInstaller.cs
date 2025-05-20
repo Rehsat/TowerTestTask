@@ -9,6 +9,7 @@ using Game.Factories.Figures;
 using Game.Infrastructure;
 using Game.Infrastructure.AssetsManagement;
 using Game.Infrastructure.Configs;
+using Game.Infrastructure.CurrentLevelData;
 using Game.Infrastructure.StateMachine.GameStates;
 using Game.Services.Cameras;
 using Game.Services.Canvases;
@@ -28,11 +29,6 @@ namespace Game
         [SerializeField] private CameraService _cameraService;
         [SerializeField] private CanvasLayersProvider canvasLayersProvider;
         [SerializeField] private PrefabsTransformContainer _prefabsTransformContainer;
-/*
-        Приветствую великий код-читающий, во многих местах думаю есть оверинжениринг для этой задачи, но сделан он был осознанно 
-        из-за требования к "обновляемости" например стейт машина тут не особо нужна, но если для обновляемости - самое то
-        Приятного прочтения) Буду крайне благодарен за фидбек, а за подробный фидбек - буду руки целовать (по желанию)
-*/      
         public override void InstallBindings()
         {
             InstallConfig(_config);
@@ -46,7 +42,7 @@ namespace Game
         // Даже с сервера подгружать можно, если соответствующий класс создать, так что надеюсь выполнил требование 3 правильно
         private void InstallConfig(IGameConfig gameConfig)
         {
-            Container.Bind<IPrefabsContainer>().FromInstance(gameConfig.PrefabsContainer).AsSingle();
+            Container.Bind<IPrefabsProvider>().FromInstance(gameConfig.PrefabsProvider).AsSingle();
             Container.Bind<IFigureSpriteByColorContainer>().FromInstance(gameConfig.FigureSpriteByColorContainer).AsSingle();
             Container.Bind<IFigureListConfigById>().FromInstance(gameConfig.StartFigureListConfigById).AsSingle();
         }
@@ -55,6 +51,7 @@ namespace Game
         {
             Container.Bind<IPrefabsTransformContainer>().FromInstance(_prefabsTransformContainer).AsSingle();
             Container.Bind<ICoroutineStarter>().To<CoroutineStarter>().FromInstance(_coroutineStarter).AsSingle();
+            Container.Bind<ICurrentLevelDataProvider>().To<CurrentLevelDataProvider>().FromNew().AsSingle();
             Container.Bind<ISceneLoader>().To<SceneLoader>().FromNew().AsSingle();
         }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.Infrastructure.AssetsManagement
 {
     [CreateAssetMenu(menuName = "GameConfigs/PrefabsContainer", fileName = "PrefabsContainer")]
-    public class PrefabsContainer : ScriptableObject, IPrefabsContainer
+    public class PrefabsProviderConfig : ScriptableObject, IPrefabsProvider
     {
         [SerializeField] private SerializableDictionary<Prefab, GameObject> _prefabs;
         public GameObject GetPrefab(Prefab prefabType)

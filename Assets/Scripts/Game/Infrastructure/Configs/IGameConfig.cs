@@ -5,7 +5,7 @@ namespace Game.Infrastructure.Configs
 {
     public interface IGameConfig
     {
-        public IPrefabsContainer PrefabsContainer { get; }
+        public IPrefabsProvider PrefabsProvider { get; }
         public IFigureSpriteByColorContainer FigureSpriteByColorContainer { get; }
         public IFigureListConfigById StartFigureListConfigById { get; }
     }

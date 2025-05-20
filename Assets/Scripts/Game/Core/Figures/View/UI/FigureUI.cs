@@ -1,11 +1,12 @@
 using EasyFramework.ReactiveEvents;
 using Game.Core.Figures.Data;
+using Game.Core.Figures.UI;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Game.Core.Figures.UI
+namespace Game.Core.Figures.View.UI
 {
     public class FigureUI : MonoBehaviour, IPointerDownHandler, IFigureInteractableView
     {

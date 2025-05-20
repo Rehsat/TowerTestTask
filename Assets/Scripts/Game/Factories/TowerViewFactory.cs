@@ -5,8 +5,8 @@ namespace Game.Factories
 {
     public class TowerViewFactory : BaseSimpleFactory<TowerView>
     {
-        public TowerViewFactory(IPrefabsContainer prefabsContainer,
-            IPrefabsTransformContainer prefabsTransformContainer) : base(prefabsContainer, prefabsTransformContainer)
+        public TowerViewFactory(IPrefabsProvider prefabsProvider,
+            IPrefabsTransformContainer prefabsTransformContainer) : base(prefabsProvider, prefabsTransformContainer)
         {
         }
 

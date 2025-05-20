@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52eb5d7c7ad017489dc47b792d2f28a, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  _prefabsContainer: {fileID: 11400000, guid: 3ce7d09a642e79f4aa220d4e59e755dd, type: 2}
+  prefabsProviderConfig: {fileID: 11400000, guid: 3ce7d09a642e79f4aa220d4e59e755dd, type: 2}
   _figureSpriteByColor: {fileID: 11400000, guid: f85781b33378e074d88e2ef751003921, type: 2}
   figureListConfigById: {fileID: 11400000, guid: e582ee16e74e01042896d23e52a7e116, type: 2}

@@ -39,8 +39,16 @@ namespace Game.Services.Canvases
             if (_canvases.ContainsKey(canvasLayer))
                 return _canvases[canvasLayer];
             
-            Debug.LogError($"There is no {canvasLayer} created. Add it in CanvasLayersService _layersOrder");
+            Debug.LogError($"There is no {canvasLayer} created.");
             return null;
+        }
+
+        public void SetCanvasLayer(CanvasLayer layer, Canvas canvas)
+        {
+            if (_canvases.ContainsKey(layer))
+                _canvases[layer] = canvas;
+            else
+                _canvases.Add(layer, canvas);
         }
     }
 }

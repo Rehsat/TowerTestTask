@@ -4,6 +4,8 @@ using Game.Core.Figures.UI;
 using Game.Core.Figures.View;
 using Game.Core.Figures.View.UI;
 using Game.Core.UI;
+using Game.Infrastructure.AssetsManagement;
+using Game.Infrastructure.CurrentLevelData;
 using Game.Services.Canvases;
 using Game.Services.DragAndDrop;
 using Game.Services.FiguresCollections;
@@ -22,7 +24,7 @@ namespace Game.Infrastructure.StateMachine.GameStates
         private readonly IFactory<FiguresScrollView> _figureScrollViewFactory;
         private readonly IFactory<TowerView> _towerViewFactory;
         private readonly IFiguresListsContainerService _figuresListsContainerService;
-        private readonly ICanvasLayersProvider _canvasLayersProvider;
+        private readonly ICurrentLevelDataProvider _currentLevelDataProvider;
 
         private FiguresScrollView _figuresScrollView;
         private FiguresScrollPresenter _figuresScrollPresenter;
@@ -36,20 +38,18 @@ namespace Game.Infrastructure.StateMachine.GameStates
         public TowerBuildState(
             IDragDataHandleService dragDataHandleService,
             IFiguresListsContainerService figuresListsContainerService,
-            ICanvasLayersProvider canvasLayersProvider,
+            ICurrentLevelDataProvider currentLevelDataProvider,
             IFactory<FigureData, FigureUI> figureUIFactory,
             IFactory<FigureData, FigureSpriteView> figureSpriteView,
-            IFactory<FiguresScrollView> figureScrollViewFactory,
             IFactory<TowerView> towerViewFactory
             )
         {
             _dragDataHandleService = dragDataHandleService;
             _figureUIFactory = figureUIFactory;
             _figureSpriteView = figureSpriteView;
-            _figureScrollViewFactory = figureScrollViewFactory;
             _towerViewFactory = towerViewFactory;
             _figuresListsContainerService = figuresListsContainerService;
-            _canvasLayersProvider = canvasLayersProvider;
+            _currentLevelDataProvider = currentLevelDataProvider;
         }
         public void Enter()
         {
@@ -70,12 +70,10 @@ namespace Game.Infrastructure.StateMachine.GameStates
         }
         private void InitializeScrollPresenter()
         {
-            var targetCanvas = _canvasLayersProvider.GetCanvasByLayer(CanvasLayer.FiguresScroll);
             var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Scroll);
-            
-            _figuresScrollView = _figureScrollViewFactory.Create();
-            _figuresScrollView.transform.parent = targetCanvas.transform;
-            _figuresScrollView.transform.localPosition = Vector3.zero;
+
+            _figuresScrollView =
+                _currentLevelDataProvider.CurrentLevelData.GetPrefabsComponent<FiguresScrollView>(Prefab.FiguresScroll);
             
            _figuresScrollPresenter = new FiguresScrollPresenter(
                listOfFigures,

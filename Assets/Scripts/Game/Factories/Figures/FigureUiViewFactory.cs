@@ -1,4 +1,5 @@
 ﻿using Game.Core.Figures.UI;
+using Game.Core.Figures.View.UI;
 using Game.Infrastructure.AssetsManagement;
 
 namespace Game.Factories.Figures
@@ -7,9 +8,9 @@ namespace Game.Factories.Figures
     {
         protected override FigureUI ViewPrefab { get; }
 
-        public FigureUiViewFactory(IPrefabsContainer prefabsContainer)
+        public FigureUiViewFactory(IPrefabsProvider prefabsProvider)
         {
-            ViewPrefab = prefabsContainer.GetPrefabsComponent<FigureUI>(Prefab.FigureUI);
+            ViewPrefab = prefabsProvider.GetPrefabsComponent<FigureUI>(Prefab.FigureUI);
         }
     }
 }

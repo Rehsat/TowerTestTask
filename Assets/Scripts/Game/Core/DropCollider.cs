@@ -12,7 +12,6 @@ namespace Game.Core
 
         public void OnDrop(IDraggable droppedObject)
         {
-            Debug.LogError(droppedObject);
             _onObjectDropped.Notify(droppedObject);
         }
     }

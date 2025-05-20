@@ -11,9 +11,9 @@ namespace Game.Factories
         private const float REFERENCED_RESOLUTION_X = 1920;
         private const float REFERENCED_RESOLUTION_Y = 1080;
         
-        public CanvasFactory(IPrefabsContainer prefabsContainer)
+        public CanvasFactory(IPrefabsProvider prefabsProvider)
         {
-            _canvasPrefab = prefabsContainer.GetPrefabsComponent<Canvas>(Prefab.Canvas);
+            _canvasPrefab = prefabsProvider.GetPrefabsComponent<Canvas>(Prefab.Canvas);
         }
         public Canvas Create()
         {
