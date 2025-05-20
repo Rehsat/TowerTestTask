@@ -45,6 +45,16 @@ namespace Game.Core.Figures.View
                 .Play()
                 .OnKill((() => transform.localScale = resultScale));
         }
+
+        public void SetMaskMode(SpriteMaskInteraction spriteMaskInteraction)
+        {
+            _spriteRenderer.maskInteraction = spriteMaskInteraction;
+        }
+
+        public void ReturnToPool() // т.к. их не особо много смысла в пуле нет, но если понадобится, то метод уже в нужных местах вызван
+        {
+            Destroy(gameObject);
+        }
         private void InitializeTouchDetector()
         {
             _compositeDisposable = new CompositeDisposable();

@@ -1,4 +1,6 @@
-﻿namespace Game.Services.DragAndDrop
+﻿using EasyFramework.ReactiveEvents;
+
+namespace Game.Services.DragAndDrop
 {
     public interface IDropContainer
     {

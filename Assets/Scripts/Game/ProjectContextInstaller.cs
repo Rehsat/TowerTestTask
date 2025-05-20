@@ -1,3 +1,4 @@
+using Game.Core.BlackHole;
 using Game.Core.Figures.Configs;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.Tower;
@@ -61,6 +62,7 @@ namespace Game
             Container.Bind<IFactory<Canvas>>().To<CanvasFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FiguresScrollView>>().To<FigureScrollViewFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<TowerView>>().To<TowerViewFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<BlackHoleView>>().To<BlackHoleFactory>().FromNew().AsSingle();
 
             Container.Bind<IFactory<FigureConfig, FigureData>>().To<FigureDataFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FigureData, FigureUI>>().To<FigureUiViewFactory>().FromNew().AsSingle();

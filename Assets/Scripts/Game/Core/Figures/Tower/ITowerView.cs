@@ -4,10 +4,14 @@ using UnityEngine;
 
 namespace Game.Core.Figures.Tower
 {
-    public interface ITowerView
+    public interface ITowerView : IDropHandler
     {
-        public IReadOnlyReactiveEvent<IDraggable> OnDroppedNewObject { get; }
         public void SetLastViewTransform(Transform transform);
         public void PlaceFirstViewTransform(Transform transform);
+    }
+
+    public interface IDropHandler
+    {
+        public IReadOnlyReactiveEvent<IDraggable> OnDroppedNewObject { get; }
     }
 }

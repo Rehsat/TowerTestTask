@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.Core.BlackHole;
 using Game.Core.Figures;
 using Game.Core.Figures.Configs;
 using Game.Core.Figures.Data;
@@ -23,17 +24,17 @@ namespace Game.Infrastructure.StateMachine.GameStates
     {
         private readonly IDragDataHandleService _dragDataHandleService;
         private readonly IFactory<FigureData, FigureUI> _figureUIFactory;
-        private readonly IFactory<FigureData, FigureSpriteView> _figureSpriteView;
+        private readonly IFactory<FigureData, FigureSpriteView> _figureSpriteViewFactory;
         private readonly IFactory<FiguresScrollView> _figureScrollViewFactory;
         private readonly IFactory<TowerView> _towerViewFactory;
+        private readonly IFactory<IBlackHoleView> _blackHoleFactory;
         private readonly IFiguresListsContainerService _figuresListsContainerService;
         private readonly ICurrentLevelDataProvider _currentLevelDataProvider;
         private readonly IFactory<FigureConfig, FigureData> _figureDataFactory;
 
-        private FiguresScrollView _figuresScrollView;
-        private TowerView _towerView;
-
+        
         private List<IDragFigureDataCreator> _dragFigureDataCreators;
+        private List<GameObject> _objectsToActivate;
         
         private CompositeDisposable _compositeDisposable;
 
@@ -44,18 +45,22 @@ namespace Game.Infrastructure.StateMachine.GameStates
             ICurrentLevelDataProvider currentLevelDataProvider,
             IFactory<FigureConfig, FigureData> figureDataFactory,
             IFactory<FigureData, FigureUI> figureUIFactory,
-            IFactory<FigureData, FigureSpriteView> figureSpriteView,
-            IFactory<TowerView> towerViewFactory
+            IFactory<FigureData, FigureSpriteView> figureSpriteViewFactory,
+            IFactory<TowerView> towerViewFactory,
+            IFactory<BlackHoleView> blackHoleFactory
             )
         {
             _dragDataHandleService = dragDataHandleService;
             _figureUIFactory = figureUIFactory;
-            _figureSpriteView = figureSpriteView;
+            _figureSpriteViewFactory = figureSpriteViewFactory;
             _towerViewFactory = towerViewFactory;
+            _blackHoleFactory = blackHoleFactory;
             _figuresListsContainerService = figuresListsContainerService;
             _currentLevelDataProvider = currentLevelDataProvider;
             _figureDataFactory = figureDataFactory;
+            
             _dragFigureDataCreators = new List<IDragFigureDataCreator>();
+            _objectsToActivate = new List<GameObject>();
         }
         public void Enter()
         {
@@ -63,6 +68,8 @@ namespace Game.Infrastructure.StateMachine.GameStates
                 Initialize();
 
             _compositeDisposable = new CompositeDisposable();
+            _objectsToActivate.ForEach(gameObjectToActivate => 
+                gameObjectToActivate.gameObject.SetActive(true));
             _dragFigureDataCreators.ForEach(creator =>
             {
                 creator.OnNewDragFigureData
@@ -75,39 +82,51 @@ namespace Game.Infrastructure.StateMachine.GameStates
         {
             InitializeScrollPresenter();
             InitializeTowerPresenter();
+            InitializeBlackHole();
             _wasInitialized = true;
         }
         private void InitializeScrollPresenter()
         {
             var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Scroll);
 
-            _figuresScrollView =
+            var figuresScrollView =
                 _currentLevelDataProvider.CurrentLevelData.GetPrefabsComponent<FiguresScrollView>(Prefab.FiguresScroll);
             
            var figuresScrollPresenter = new FiguresScrollPresenter(
                listOfFigures,
                _figureUIFactory,
-               _figuresScrollView,
+               figuresScrollView,
                _figureDataFactory
                );
+           
            _dragFigureDataCreators.Add(figuresScrollPresenter);
+           _objectsToActivate.Add(figuresScrollView.gameObject);
         }
 
         private void InitializeTowerPresenter()
         {
-            _towerView = _towerViewFactory.Create();
+            var towerView = _towerViewFactory.Create();
             var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Tower);
             
-            var towerPresenter = new TowerPresenter(listOfFigures, _towerView, _figureSpriteView);
+            var towerPresenter = new TowerPresenter(listOfFigures, towerView, _figureSpriteViewFactory);
+            
             _dragFigureDataCreators.Add(towerPresenter);
+            _objectsToActivate.Add(towerView.gameObject);
+        }
+
+        private void InitializeBlackHole()
+        {
+            var blackHoleView = _blackHoleFactory.Create();
+            var blackHolePresenter = new BlackHolePresenter(blackHoleView, _figureSpriteViewFactory);
         }
 
         public void Exit()
         {
             if(_wasInitialized == false) return;
             
-            _figuresScrollView.gameObject.SetActive(false);
             _compositeDisposable?.Dispose();
+            _objectsToActivate.ForEach(gameObjectToActivate => 
+                gameObjectToActivate.gameObject.SetActive(false));
         }
 
         public void SetStateMachine(GameStateMachine stateMachine)

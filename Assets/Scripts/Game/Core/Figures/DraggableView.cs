@@ -5,15 +5,15 @@ namespace Game.Core.Figures
 {
     public class DraggableView : IDraggable
     {
-        private readonly IDragData _dragFigureData;
+        private readonly IDragData _dragData;
         private readonly RectTransform _transformToDrag;
         private readonly ParticleSystem _failParticle;
         public RectTransform TransformToDrag => _transformToDrag;
-        public IDragData DragFigureData => _dragFigureData;
+        public IDragData DragData => _dragData;
 
-        public DraggableView(IDragData dragFigureData, RectTransform transformToDrag, ParticleSystem failParticle)
+        public DraggableView(IDragData dragData, RectTransform transformToDrag, ParticleSystem failParticle)
         {
-            _dragFigureData = dragFigureData;
+            _dragData = dragData;
             _transformToDrag = transformToDrag;
             _failParticle = failParticle;
         }
@@ -30,7 +30,7 @@ namespace Game.Core.Figures
                 //_failParticle.transform.position = _transformToDrag.transform.position;
             }
             _transformToDrag.gameObject.SetActive(false);
-            _dragFigureData.SendCallback(dropResult);
+            _dragData.SendCallback(dropResult);
         }
     }
 }

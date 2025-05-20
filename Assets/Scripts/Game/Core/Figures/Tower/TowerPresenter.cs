@@ -74,7 +74,7 @@ namespace Game.Core.Figures.Tower
         private void HandleNewDroppedObject(IDraggable draggable)
         {
             if (draggable is DraggableView draggableView)
-                if (draggableView.DragFigureData is DragFigureData dragFigureData)
+                if (draggableView.DragData is DragFigureData dragFigureData)
                 {
                     HandleNewDragFigureData(draggableView, dragFigureData);
                     return;

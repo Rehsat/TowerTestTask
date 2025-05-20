@@ -8,6 +8,7 @@
         FiguresScroll = 3,
         TowerView =  4,
         FigureSprite = 5,
+        Blackhole = 6,
         
     }
 }
