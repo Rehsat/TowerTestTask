@@ -93,11 +93,19 @@ namespace Game.Core.Figures.Tower
 
         private void HandleNewDragFigureData(DraggableView draggableView, DragFigureData dragFigureData)
         {
+            
             //Тут можно проверить пункт из ТЗ про обновляемость (про то что можно поменять логику на "ставить кубики только того же цвета")
             // проверяем есть ли что-то в списке фигур и если есть, то сравниваем цвет даты ее и дропнутой. 
+            
             if (_figureSpriteViewsByData.ContainsKey(dragFigureData.FigureData))
             {
                 draggableView.OnDragComplete(DropResult.Fail);
+                return;
+            }
+            if (_ofScreenCheckService.IsObjectOutOfScreen(_towerView.DropContainerTransform))
+            {
+                draggableView.OnDragComplete(DropResult.Fail);
+                LogFigureOutOfRange();
                 return;
             }
             
@@ -114,12 +122,6 @@ namespace Game.Core.Figures.Tower
                 throw new Exception($"You tried to add already added data {buggedView.name}");
             }
 
-            if (_ofScreenCheckService.IsObjectOutOfScreen(_towerView.DropContainerTransform))
-            {
-                LogFigureOutOfRange();
-                return;
-            }
-            
             _figuresAnimator.KillCurrentAnimation();
             var view = _figureSpriteViewFactory.Create(figureData);
             view.name = view.name + _figureSpriteViews.Count;
@@ -156,37 +158,48 @@ namespace Game.Core.Figures.Tower
 
         private void RemoveData(int index)
         {
-            if (_figureSpriteViews.Count <= index)
-            {
-                Debug.LogError($"List of views in tower was corrupted");
+            if (IsIndexValid(index) == false) 
                 return;
-            }
 
             var viewToRemove = _figureSpriteViews[index];
-            var viewToRemoveCurrentParent = viewToRemove.transform.parent;
             var isLastFigure = _figureSpriteViews.Count - 1 == index ;
             _figuresAnimator.KillCurrentAnimation();
-            
+
             if (isLastFigure)
-            {
-                var newLastFigure = index == 0 ? null : _figureSpriteViews[index - 1].transform;
-                _towerView.SetLastViewTransform(newLastFigure);
-            }
+                HandleLastFigureRemoval(index);
             else
-            {
-                var nextViewInTower = _figureSpriteViews[index + 1];
-                var nextViewTransform = nextViewInTower.transform;
-                nextViewTransform.parent = viewToRemoveCurrentParent;
-                
-                var nextViewPosition = nextViewTransform.localPosition;
-                var newNextViewPosition = new Vector2(nextViewPosition.x, nextViewPosition.y - viewToRemove.transform.localScale.y * 2);
-                _figuresAnimator.DoDropAnimation(nextViewTransform, newNextViewPosition);
-            }
+                HandleNonLastFigureRemoval(index, viewToRemove);
+            
             _figureSpriteViews.RemoveAt(index);
             viewToRemove.ReturnToPool();
             LogFigureRemove(index + 1);
         }
-
+        private bool IsIndexValid(int index)
+        {
+            if (_figureSpriteViews.Count > index) 
+                return true;
+    
+            Debug.LogError("List of views in tower was corrupted");
+            return false;
+        }
+        private void HandleLastFigureRemoval(int index)
+        {
+            Transform newLastFigure = index > 0 
+                ? _figureSpriteViews[index - 1].transform 
+                : null;
+    
+            _towerView.SetLastViewTransform(newLastFigure);
+        }
+        private void HandleNonLastFigureRemoval(int index, FigureSpriteView viewToRemove)
+        {
+            var nextViewInTower = _figureSpriteViews[index + 1];
+            var nextViewTransform = nextViewInTower.transform;
+            nextViewTransform.parent = viewToRemove.transform.parent;
+                
+            var nextViewPosition = nextViewTransform.localPosition;
+            var newNextViewPosition = new Vector2(nextViewPosition.x, nextViewPosition.y - viewToRemove.transform.localScale.y * 2);
+            _figuresAnimator.DoDropAnimation(nextViewTransform, newNextViewPosition);
+        }
 
         private void OnInteractWithFigure(FigureData figureData)
         {
