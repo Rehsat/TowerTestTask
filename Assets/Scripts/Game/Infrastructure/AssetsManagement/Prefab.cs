@@ -10,5 +10,6 @@
         FigureSprite = 5,
         Blackhole = 6,
         ExplosionParticle = 7,
+        LogView = 8,
     }
 }

@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using EasyFramework.ReactiveEvents;
 using Game.Core.Figures;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.View;
 using Game.Services.DragAndDrop;
+using Game.Services.LogService;
 using UniRx;
 using UnityEngine;
 using Zenject;
 
 namespace Game.Core.BlackHole
 {
-    public class BlackHolePresenter : IDisposable
+    public class BlackHolePresenter : IDisposable, ILogsCreator
     {
         private readonly IBlackHoleView _blackHoleView;
         private readonly IFactory<FigureData, FigureSpriteView> _figuresFactory;
         private CompositeDisposable _compositeDisposable;
-
+        
+        private ReactiveEvent<LocalizableLogData> _onNewLog;
+        public IReadOnlyReactiveEvent<LocalizableLogData> OnNewLogs => _onNewLog;
         public BlackHolePresenter(
             IBlackHoleView blackHoleView, 
             IFactory<FigureData, FigureSpriteView> figuresFactory)
@@ -22,6 +27,7 @@ namespace Game.Core.BlackHole
             _blackHoleView = blackHoleView;
             _figuresFactory = figuresFactory;
             
+            _onNewLog = new ReactiveEvent<LocalizableLogData>();
             _compositeDisposable = new CompositeDisposable();
             _blackHoleView.OnDroppedNewObject
                 .SubscribeWithSkip(OnDroppedNewObject)
@@ -56,12 +62,18 @@ namespace Game.Core.BlackHole
             void OnSuckComplete()
             {
                 newFigureSprite.ReturnToPool();
+                LogFigureDestroyed();
             }
         }
-
+        private void LogFigureDestroyed()
+        {
+            var listOfLogStrings = new List<string>(){"Фигура умерла страшной смертью в пасти черной дыры. Ты ужасен!"};
+            _onNewLog.Notify(new LocalizableLogData(listOfLogStrings));
+        }
         public void Dispose()
         {
             _compositeDisposable?.Dispose();
         }
+
     }
 }

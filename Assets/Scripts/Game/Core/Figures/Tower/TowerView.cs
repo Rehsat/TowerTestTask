@@ -37,6 +37,7 @@ namespace Game.Core.Figures.Tower
                 new Vector2(
                     lastViewPosition.x,
                  lastViewPosition.y + lastViewScale.y);
+            _dropContainer.transform.parent = lastViewTransform;
         }
 
         public void PlaceFirstViewTransform(Transform transform)

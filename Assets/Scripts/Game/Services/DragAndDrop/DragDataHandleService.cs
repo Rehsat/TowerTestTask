@@ -1,21 +1,26 @@
-﻿using Game.Core.Figures;
+﻿using System.Collections.Generic;
+using EasyFramework.ReactiveEvents;
+using Game.Core.Figures;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
 using Game.Core.Figures.View.UI;
 using Game.Infrastructure.AssetsManagement;
 using Game.Services.Cameras;
+using Game.Services.LogService;
 using UnityEngine;
 using Zenject;
 
 namespace Game.Services.DragAndDrop
 {
-    public class DragDataHandleService : IDragDataHandleService
+    public class DragDataHandleService : IDragDataHandleService, ILogsCreator
     {
         private readonly IFactory<FigureData, FigureUI> _figureUiFactory;
         private readonly ICameraService _cameraService;
         private readonly IDragService _dragService;
         private readonly ParticleSystem _explosionParticle;
 
+        private ReactiveEvent<LocalizableLogData> _onNewLogs;
+        public IReadOnlyReactiveEvent<LocalizableLogData> OnNewLogs => _onNewLogs;
         public DragDataHandleService(
             IFactory<FigureData, FigureUI> figureUiFactory,
             IPrefabsProvider prefabProvider,
@@ -26,6 +31,7 @@ namespace Game.Services.DragAndDrop
             _cameraService = cameraService;
             _dragService = dragService;
             _explosionParticle = prefabProvider.GetPrefabsComponent<ParticleSystem>(Prefab.ExplosionParticle);
+            _onNewLogs = new ReactiveEvent<LocalizableLogData>();
         }
         public void HandleDragData(IDragData dragData)
         {
@@ -55,8 +61,14 @@ namespace Game.Services.DragAndDrop
                 
                 var particleSpawnPosition = _cameraService.MainCamera.ScreenToWorldPoint(completePosition);
                 var particle = Object.Instantiate(_explosionParticle, particleSpawnPosition, Quaternion.identity);
-                Object.Destroy(particle, particle.main.duration+1); 
+                Object.Destroy(particle, particle.main.duration+1);
+                LogFigureDragFail();
             }
+        }
+        private void LogFigureDragFail()
+        {
+            var listOfLogStrings = new List<string>(){"Ты перетащили фигуру в неподходящее место"};
+            _onNewLogs.Notify(new LocalizableLogData(listOfLogStrings));
         }
     }
 }

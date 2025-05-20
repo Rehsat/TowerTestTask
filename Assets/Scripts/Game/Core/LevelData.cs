@@ -9,9 +9,6 @@ namespace Game.Core
 {
     public class LevelData : MonoBehaviour
     {
-        //Дублирование кода с PrefabsProviderConfig. Надо выделить класс отдельный со всей этой историей, но словарь сериализуемый
-        // не позволяет. Надо будет найти ему замену, а пока думаю не слишком критично
-        
         [SerializeField] private SerializableDictionary<Prefab, GameObject> _prefabs;
 
         [Inject]
@@ -21,7 +18,10 @@ namespace Game.Core
         }
         public GameObject GetPrefab(Prefab prefabType)
         {
-            return _prefabs[prefabType];
+            if (_prefabs.ContainsKey(prefabType))
+                return _prefabs[prefabType];
+            
+            throw new Exception($"There is no prefab type of {prefabType} on the current scene");
         }
 
         public TComponent GetPrefabsComponent<TComponent>(Prefab prefabType) where TComponent : Component
