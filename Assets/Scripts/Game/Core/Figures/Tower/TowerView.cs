@@ -13,13 +13,13 @@ namespace Game.Core.Figures.Tower
         private Vector2 _startDropPosition;
         private Vector2 _startDropScale;
         public IReadOnlyReactiveEvent<IDraggable> OnDroppedNewObject => _dropContainer.OnObjectDropped;
-
+        public Transform DropContainerTransform => _dropContainer.transform;
         private void Start()
         {
             _startDropPosition = _dropContainer.transform.localPosition;
             _startDropScale = _dropContainer.transform.localScale;
         }
-
+        
         public void SetLastViewTransform(Transform lastViewTransform)
         {
             if (lastViewTransform == null)

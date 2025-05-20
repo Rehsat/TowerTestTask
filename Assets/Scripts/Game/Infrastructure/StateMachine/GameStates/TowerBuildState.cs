@@ -13,6 +13,7 @@ using Game.Infrastructure.CurrentLevelData;
 using Game.Services.Canvases;
 using Game.Services.DragAndDrop;
 using Game.Services.FiguresCollections;
+using Game.Services.OutOfScreenCheck;
 using Infrastructure.StateMachine;
 using UniRx;
 using UnityEngine;
@@ -30,6 +31,7 @@ namespace Game.Infrastructure.StateMachine.GameStates
         private readonly IFactory<IBlackHoleView> _blackHoleFactory;
         private readonly IFiguresListsContainerService _figuresListsContainerService;
         private readonly ICurrentLevelDataProvider _currentLevelDataProvider;
+        private readonly IOutOfScreenCheckService _ofScreenCheckService;
         private readonly IFactory<FigureConfig, FigureData> _figureDataFactory;
 
         
@@ -43,6 +45,7 @@ namespace Game.Infrastructure.StateMachine.GameStates
             IDragDataHandleService dragDataHandleService,
             IFiguresListsContainerService figuresListsContainerService,
             ICurrentLevelDataProvider currentLevelDataProvider,
+            IOutOfScreenCheckService ofScreenCheckService,
             IFactory<FigureConfig, FigureData> figureDataFactory,
             IFactory<FigureData, FigureUI> figureUIFactory,
             IFactory<FigureData, FigureSpriteView> figureSpriteViewFactory,
@@ -57,6 +60,7 @@ namespace Game.Infrastructure.StateMachine.GameStates
             _blackHoleFactory = blackHoleFactory;
             _figuresListsContainerService = figuresListsContainerService;
             _currentLevelDataProvider = currentLevelDataProvider;
+            _ofScreenCheckService = ofScreenCheckService;
             _figureDataFactory = figureDataFactory;
             
             _dragFigureDataCreators = new List<IDragFigureDataCreator>();
@@ -108,7 +112,10 @@ namespace Game.Infrastructure.StateMachine.GameStates
             var towerView = _towerViewFactory.Create();
             var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Tower);
             
-            var towerPresenter = new TowerPresenter(listOfFigures, towerView, _figureSpriteViewFactory);
+            var towerPresenter = new TowerPresenter(listOfFigures, 
+                towerView,
+                _ofScreenCheckService,
+                _figureSpriteViewFactory);
             
             _dragFigureDataCreators.Add(towerPresenter);
             _objectsToActivate.Add(towerView.gameObject);

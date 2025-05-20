@@ -6,6 +6,7 @@ using EasyFramework.ReactiveEvents;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.View;
 using Game.Services.DragAndDrop;
+using Game.Services.OutOfScreenCheck;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -16,6 +17,7 @@ namespace Game.Core.Figures.Tower
     {
         private readonly IListOfFiguresData _listOfFiguresData;
         private readonly ITowerView _towerView;
+        private readonly IOutOfScreenCheckService _ofScreenCheckService;
         private readonly IFactory<FigureData, FigureSpriteView> _figureSpriteViewFactory;
 
         private FiguresAnimator _figuresAnimator;
@@ -31,10 +33,12 @@ namespace Game.Core.Figures.Tower
         public TowerPresenter(
             IListOfFiguresData listOfFiguresData, 
             ITowerView towerView,
+            IOutOfScreenCheckService ofScreenCheckService,
             IFactory<FigureData, FigureSpriteView> figureSpriteViewFactory)
         {
             _listOfFiguresData = listOfFiguresData;
             _towerView = towerView;
+            _ofScreenCheckService = ofScreenCheckService;
             _figureSpriteViewFactory = figureSpriteViewFactory;
 
             _figuresAnimator = new FiguresAnimator();
@@ -104,7 +108,9 @@ namespace Game.Core.Figures.Tower
                 buggedView.name = GetHashCode().ToString();
                 throw new Exception($"You tried to add already added data {buggedView.name}");
             }
-
+            if(_ofScreenCheckService.IsObjectOutOfScreen(_towerView.DropContainerTransform)) 
+                return;
+            
             var view = _figureSpriteViewFactory.Create(figureData);
             view.name = view.name + _figureSpriteViews.Count;
             view.SetInteractableData(figureData, _onStartDragFigure);

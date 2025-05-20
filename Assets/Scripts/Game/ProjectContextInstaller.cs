@@ -17,6 +17,7 @@ using Game.Services.Canvases;
 using Game.Services.DragAndDrop;
 using Game.Services.FiguresCollections;
 using Game.Services.Input;
+using Game.Services.OutOfScreenCheck;
 using Game.Services.RaycastService;
 using Infrastructure.StateMachine;
 using UnityEngine;
@@ -78,7 +79,8 @@ namespace Game
             Container.Bind<IDragService>().To<DragAndDropService>().FromNew().AsSingle();
             Container.Bind<IDragDataHandleService>().To<DragDataHandleService>().FromNew().AsSingle();
             Container.Bind<IFiguresListsContainerService>().To<FiguresListsContainerService>().FromNew().AsSingle();
-
+            Container.Bind<IOutOfScreenCheckService>().To<OutOfScreenCheckService>().FromNew().AsSingle();
+            
             Container.Bind<IInteractService>().To<InteractService>().FromNew().AsSingle().NonLazy();
         }
 
