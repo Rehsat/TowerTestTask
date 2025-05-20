@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EasyFramework.ReactiveEvents;
 using Game.Core.UI;
@@ -9,10 +10,24 @@ namespace Game.Core.Figures.Tower
     public class TowerView : MonoBehaviour, ITowerView
     {
         [SerializeField] private DropCollider _dropContainer;
+        private Vector2 _startDropPosition;
+        private Vector2 _startDropScale;
         public IReadOnlyReactiveEvent<IDraggable> OnDroppedNewObject => _dropContainer.OnObjectDropped;
-        
+
+        private void Start()
+        {
+            _startDropPosition = _dropContainer.transform.localPosition;
+            _startDropScale = _dropContainer.transform.localScale;
+        }
+
         public void SetLastViewTransform(Transform lastViewTransform)
         {
+            if (lastViewTransform == null)
+            {
+                ResetDropContainer();
+                return;
+            }
+            
             var lastViewPosition = lastViewTransform.position;
             var lastViewScale = lastViewTransform.localScale;
             
@@ -27,6 +42,12 @@ namespace Game.Core.Figures.Tower
         {
             transform.parent = this.transform;
             transform.localPosition = Vector2.zero;
+        }
+
+        private void ResetDropContainer()
+        {
+            _dropContainer.transform.localPosition = _startDropPosition;
+            _dropContainer.transform.localScale = _startDropScale;
         }
     }
 }

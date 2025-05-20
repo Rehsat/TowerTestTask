@@ -53,6 +53,7 @@ namespace Game.Core.Figures.View
 
         public void ReturnToPool() // т.к. их не особо много смысла в пуле нет, но если понадобится, то метод уже в нужных местах вызван
         {
+            Dispose();
             Destroy(gameObject);
         }
         private void InitializeTouchDetector()

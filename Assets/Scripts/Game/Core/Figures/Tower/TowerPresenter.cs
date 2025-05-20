@@ -106,6 +106,7 @@ namespace Game.Core.Figures.Tower
             }
 
             var view = _figureSpriteViewFactory.Create(figureData);
+            view.name = view.name + _figureSpriteViews.Count;
             view.SetInteractableData(figureData, _onStartDragFigure);
             _figureSpriteViewsByData.Add(figureData, view);
             AddFigureViewToList(figureData, view);
@@ -147,20 +148,24 @@ namespace Game.Core.Figures.Tower
 
             var viewToRemove = _figureSpriteViews[index];
             var viewToRemoveCurrentParent = viewToRemove.transform.parent;
-            var isLastFigure = _figureSpriteViews.Count == index - 1;
+            var isLastFigure = _figureSpriteViews.Count - 1 == index ;
             
-            if (isLastFigure == false) // можно !isLastFigure, но так заметней
+            if (isLastFigure)
             {
-                var nextViewInTower = _figureSpriteViews[index];
+                var newLastFigure = index == 0 ? null : _figureSpriteViews[index - 1].transform;
+                _towerView.SetLastViewTransform(newLastFigure);
+            }
+            else
+            {
+                var nextViewInTower = _figureSpriteViews[index + 1];
                 var nextViewTransform = nextViewInTower.transform;
-                var nextViewPosition = nextViewTransform.position;
-                var newNextViewPosition = new Vector2(nextViewPosition.x, nextViewPosition.y - viewToRemove.transform.localScale.y);
                 nextViewTransform.parent = viewToRemoveCurrentParent;
+                var nextViewPosition = nextViewTransform.localPosition;
+                var newNextViewPosition = new Vector2(nextViewPosition.x, nextViewPosition.y - viewToRemove.transform.localScale.y * 2);
                 _figuresAnimator.DoDropAnimation(nextViewTransform, newNextViewPosition);
             }
-
-            viewToRemove.Dispose();
-            Object.Destroy(viewToRemove.gameObject); //Можно будет добавить обжект пул в обновлениях, на данный момент он кажется мне оверинжениренгом. Слишком мало объектов уничтожается
+            _figureSpriteViews.RemoveAt(index);
+            viewToRemove.ReturnToPool();
         }
 
         private void OnInteractWithFigure(FigureData figureData)

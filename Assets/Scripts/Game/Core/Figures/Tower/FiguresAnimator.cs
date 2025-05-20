@@ -34,12 +34,12 @@ namespace Game.Core.Figures.Tower
             ResetSequence();
 
             var dropTween = transformToAnimate
-                .DOMove(resultPosition, 0.6f)
+                .DOLocalMove(resultPosition, 0.6f)
                 .SetEase(Ease.InBack);
             
             _figuresAnimationSequence
                 .Append(dropTween)
-                .OnKill(() => transformToAnimate.position = resultPosition);
+                .OnKill(() => transformToAnimate.localPosition = resultPosition);
 
             _figuresAnimationSequence.Play();
         }
