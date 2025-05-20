@@ -20,12 +20,13 @@ namespace Game.Core.Figures.Tower
 
         private FiguresAnimator _figuresAnimator;
         private CompositeDisposable _compositeDisposable;
-        private ReactiveEvent<DragFigureData> _onNewFigureData;
+        private ReactiveEvent<DragFigureData> _onNewDragFigureData;
+        private ReactiveEvent<FigureData> _onStartDragFigure;
 
         private List<FigureSpriteView> _figureSpriteViews;
         private Dictionary<FigureData, FigureSpriteView> _figureSpriteViewsByData;
 
-        public IReadOnlyReactiveEvent<DragFigureData> OnNewDragFigureData => _onNewFigureData;
+        public IReadOnlyReactiveEvent<DragFigureData> OnNewDragFigureData => _onNewDragFigureData;
         
         public TowerPresenter(
             IListOfFiguresData listOfFiguresData, 
@@ -40,6 +41,8 @@ namespace Game.Core.Figures.Tower
             _compositeDisposable = new CompositeDisposable();
             _figureSpriteViews = new List<FigureSpriteView>();
             _figureSpriteViewsByData = new Dictionary<FigureData, FigureSpriteView>();
+            _onStartDragFigure = new ReactiveEvent<FigureData>();
+            _onNewDragFigureData = new ReactiveEvent<DragFigureData>();
             
             Initialize();
         }
@@ -62,6 +65,10 @@ namespace Game.Core.Figures.Tower
             _towerView.OnDroppedNewObject
                 .SubscribeWithSkip(HandleNewDroppedObject)
                 .AddTo(_compositeDisposable);
+
+            _onStartDragFigure
+                .SubscribeWithSkip(OnInteractWithFigure)
+                .AddTo(_compositeDisposable);
         }
 
         private void HandleNewDroppedObject(IDraggable draggable)
@@ -79,6 +86,12 @@ namespace Game.Core.Figures.Tower
         {
             //Тут можно проверить пункт из ТЗ про обновляемость (про то что можно поменять логику на "ставить кубики только того же цвета")
             // проверяем есть ли что-то в списке фигур и если есть, то сравниваем цвет даты ее и дропнутой. 
+            if (_figureSpriteViewsByData.ContainsKey(dragFigureData.FigureData))
+            {
+                draggableView.OnDragComplete(DropResult.Fail);
+                return;
+            }
+            
             _listOfFiguresData.AddData(dragFigureData.FigureData);
             draggableView.OnDragComplete(DropResult.Success);
         }
@@ -93,6 +106,7 @@ namespace Game.Core.Figures.Tower
             }
 
             var view = _figureSpriteViewFactory.Create(figureData);
+            view.SetInteractableData(figureData, _onStartDragFigure);
             _figureSpriteViewsByData.Add(figureData, view);
             AddFigureViewToList(figureData, view);
         }
@@ -145,16 +159,26 @@ namespace Game.Core.Figures.Tower
                 _figuresAnimator.DoDropAnimation(nextViewTransform, newNextViewPosition);
             }
 
-            viewToRemove.transform.parent = null;
+            viewToRemove.Dispose();
             Object.Destroy(viewToRemove.gameObject); //Можно будет добавить обжект пул в обновлениях, на данный момент он кажется мне оверинжениренгом. Слишком мало объектов уничтожается
         }
 
-        //Возможно следует выделить отдельный класс под анимации, не уверен. Еслиб в проекте попался второй объект требующий подобного
-        //функционала, то выделил бы
+        private void OnInteractWithFigure(FigureData figureData)
+        {
+            var dragData = new DragFigureData(figureData, OnComplete, DragFigureSource.Tower);
+            _onNewDragFigureData.Notify(dragData);
+
+            void OnComplete(DropResult result)
+            {
+                if (result == DropResult.Success)
+                    _listOfFiguresData.RemoveData(figureData);
+            }
+        }
+
         public void Dispose()
         {
             _compositeDisposable?.Dispose();
-            _onNewFigureData?.Dispose();
+            _onNewDragFigureData?.Dispose();
         }
     }
 }

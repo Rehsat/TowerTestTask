@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game.Core.Figures.View
 {
-    public class FigureSpriteView : MonoBehaviour, IFigureInteractableView
+    public class FigureSpriteView : MonoBehaviour, IFigureInteractableView, IDisposable
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private PlayerTouchDetector _touchDetector;
@@ -80,6 +80,11 @@ namespace Game.Core.Figures.View
                 _spriteRenderer.GetComponent<SpriteRenderer>();
             if (_touchDetector == null)
                 _spriteRenderer.GetComponent<PlayerTouchDetector>();
+        }
+
+        public void Dispose()
+        {
+            _compositeDisposable?.Dispose();
         }
     }
 }

@@ -16,6 +16,7 @@ using Game.Services.Canvases;
 using Game.Services.DragAndDrop;
 using Game.Services.FiguresCollections;
 using Game.Services.Input;
+using Game.Services.RaycastService;
 using Infrastructure.StateMachine;
 using UnityEngine;
 using Zenject;
@@ -70,10 +71,13 @@ namespace Game
         {
             Container.Bind<ICanvasLayersProvider>().To<CanvasLayersProvider>().FromInstance(canvasLayersProvider).AsSingle();
             Container.Bind<ICameraService>().To<CameraService>().FromInstance(_cameraService).AsSingle();
+            Container.Bind<IRaycastService>().To<RaycastService>().FromNew().AsSingle();
             Container.Bind<IInputService>().To<InputService>().FromNew().AsSingle();
             Container.Bind<IDragService>().To<DragAndDropService>().FromNew().AsSingle();
             Container.Bind<IDragDataHandleService>().To<DragDataHandleService>().FromNew().AsSingle();
             Container.Bind<IFiguresListsContainerService>().To<FiguresListsContainerService>().FromNew().AsSingle();
+
+            Container.Bind<IInteractService>().To<InteractService>().FromNew().AsSingle().NonLazy();
         }
 
         private void InstallStateMachine()

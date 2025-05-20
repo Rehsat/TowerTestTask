@@ -8,24 +8,22 @@ namespace Game.Core.Figures
     public class DragFigureData : IDragData
     {
         private readonly Action<DropResult> _onComplete;
-        
-        private FigureData _figureData;
-        public FigureData FigureData => _figureData;
+        public DragFigureSource Source { get; }
+        public FigureData FigureData { get; private set; }
 
-        public DragFigureData(FigureData figureData, Action<DropResult> onComplete)
+        public DragFigureData(
+            FigureData figureData, 
+            Action<DropResult> onComplete, 
+            DragFigureSource source)
         {
-            _figureData = figureData;
+            FigureData = figureData;
+            Source = source;
             _onComplete = onComplete;
         }
 
         public void SendCallback(DropResult dropResult)
         {
             _onComplete?.Invoke(dropResult);
-        }
-
-        public void SetNewFigureData(FigureData figureData)
-        {
-            _figureData = figureData;
         }
     }
 }

@@ -5,6 +5,7 @@ using Game.Infrastructure;
 using Game.Services.Cameras;
 using Game.Services.Canvases;
 using Game.Services.Input;
+using Game.Services.RaycastService;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,8 +15,8 @@ namespace Game.Services.DragAndDrop
     public class DragAndDropService : IDragService, IDisposable
     {
         private readonly IInputService _inputService;
-        private readonly ICameraService _cameraService;
-        
+        private readonly IRaycastService _raycastService;
+
         private readonly ReactiveProperty<IDraggable> _currentDraggable;
         private readonly CompositeDisposable _compositeDisposable;
         private readonly RectTransform _canvasRectTransform;
@@ -24,11 +25,11 @@ namespace Game.Services.DragAndDrop
 
         public DragAndDropService(
             IInputService inputService, 
-            ICameraService cameraService,
-            ICanvasLayersProvider canvasLayersProvider)
+            ICanvasLayersProvider canvasLayersProvider,
+            IRaycastService raycastService)
         {
             _inputService = inputService;
-            _cameraService = cameraService;
+            _raycastService = raycastService;
             _currentDraggable = new ReactiveProperty<IDraggable>();
             _compositeDisposable = new CompositeDisposable();
             _canvasRectTransform = canvasLayersProvider
@@ -102,12 +103,10 @@ namespace Game.Services.DragAndDrop
 
         private void NotifyDropContainer()
         {
-            Vector2 screenPosition = _inputService.PointerPosition;
-            Ray ray = _cameraService.MainCamera.ScreenPointToRay(screenPosition);
-            RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+            var dropScreenPosition = _inputService.PointerPosition;
             
-            if(hit.collider != null && 
-               hit.collider.TryGetComponent<IDropContainer>(out var container))
+            if(_raycastService.TryGetComponentInRaycastHit<IDropContainer>
+                (dropScreenPosition, out var container))
                 TryDropCurrentDraggable(container);
             else
                 TryDropCurrentDraggable(null);

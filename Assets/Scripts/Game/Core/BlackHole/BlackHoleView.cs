@@ -6,4 +6,5 @@ namespace Game.Core.BlackHole
     {
         [SerializeField] private DropCollider _dropContainer;
     }
+    
 }

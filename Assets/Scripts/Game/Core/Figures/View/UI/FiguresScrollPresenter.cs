@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EasyFramework.ReactiveEvents;
+using Game.Core.Figures.Configs;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
 using Game.Core.UI;
@@ -18,6 +19,7 @@ namespace Game.Core.Figures.View.UI
         private readonly IListOfFiguresData _listOfScrollFigures;
         private readonly IFactory<FigureData, FigureUI> _figureUIFactory;
         private readonly ICollectionView<FigureUI> _figureUICollectionView;
+        private readonly IFactory<FigureConfig, FigureData> _figureDataFactory;
 
         private Dictionary<FigureData, FigureUI> _figureUis;
         private CompositeDisposable _compositeDisposable;
@@ -28,11 +30,14 @@ namespace Game.Core.Figures.View.UI
         public FiguresScrollPresenter(
             IListOfFiguresData listOfScrollFigures,
             IFactory<FigureData, FigureUI> figureUIFactory,
-            ICollectionView<FigureUI> figureUICollectionView)
+            ICollectionView<FigureUI> figureUICollectionView,
+            IFactory<FigureConfig, FigureData> figureDataFactory) // Для этой фабрики надо бы выделить отдельный класс,
+                                                                  // который будет оборачивать этот. Но для тестового думаю так сойдет
         {
             _listOfScrollFigures = listOfScrollFigures;
             _figureUIFactory = figureUIFactory;
             _figureUICollectionView = figureUICollectionView;
+            _figureDataFactory = figureDataFactory;
             _onNewDragFigureData = new ReactiveEvent<DragFigureData>();
             
             _figureUis = new Dictionary<FigureData, FigureUI>();
@@ -82,7 +87,8 @@ namespace Game.Core.Figures.View.UI
 
         private void StartDragFigure(FigureData figureData, Action<DropResult> onComplete)
         {
-            var dragFigureData = new DragFigureData(figureData, onComplete);
+            var newData = _figureDataFactory.Create(figureData.Config);
+            var dragFigureData = new DragFigureData(newData, onComplete, DragFigureSource.Scroll);
             _onNewDragFigureData.Notify(dragFigureData);
         }
 

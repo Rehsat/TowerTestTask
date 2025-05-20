@@ -1,4 +1,7 @@
-﻿using Game.Core.Figures.Data;
+﻿using System.Collections.Generic;
+using Game.Core.Figures;
+using Game.Core.Figures.Configs;
+using Game.Core.Figures.Data;
 using Game.Core.Figures.Tower;
 using Game.Core.Figures.UI;
 using Game.Core.Figures.View;
@@ -25,12 +28,12 @@ namespace Game.Infrastructure.StateMachine.GameStates
         private readonly IFactory<TowerView> _towerViewFactory;
         private readonly IFiguresListsContainerService _figuresListsContainerService;
         private readonly ICurrentLevelDataProvider _currentLevelDataProvider;
+        private readonly IFactory<FigureConfig, FigureData> _figureDataFactory;
 
         private FiguresScrollView _figuresScrollView;
-        private FiguresScrollPresenter _figuresScrollPresenter;
-
         private TowerView _towerView;
-        private TowerPresenter _towerPresenter;
+
+        private List<IDragFigureDataCreator> _dragFigureDataCreators;
         
         private CompositeDisposable _compositeDisposable;
 
@@ -39,6 +42,7 @@ namespace Game.Infrastructure.StateMachine.GameStates
             IDragDataHandleService dragDataHandleService,
             IFiguresListsContainerService figuresListsContainerService,
             ICurrentLevelDataProvider currentLevelDataProvider,
+            IFactory<FigureConfig, FigureData> figureDataFactory,
             IFactory<FigureData, FigureUI> figureUIFactory,
             IFactory<FigureData, FigureSpriteView> figureSpriteView,
             IFactory<TowerView> towerViewFactory
@@ -50,6 +54,8 @@ namespace Game.Infrastructure.StateMachine.GameStates
             _towerViewFactory = towerViewFactory;
             _figuresListsContainerService = figuresListsContainerService;
             _currentLevelDataProvider = currentLevelDataProvider;
+            _figureDataFactory = figureDataFactory;
+            _dragFigureDataCreators = new List<IDragFigureDataCreator>();
         }
         public void Enter()
         {
@@ -57,9 +63,12 @@ namespace Game.Infrastructure.StateMachine.GameStates
                 Initialize();
 
             _compositeDisposable = new CompositeDisposable();
-            _figuresScrollPresenter.OnNewDragFigureData
-                .SubscribeWithSkip(_dragDataHandleService.HandleDragData)
-                .AddTo(_compositeDisposable);
+            _dragFigureDataCreators.ForEach(creator =>
+            {
+                creator.OnNewDragFigureData
+                    .SubscribeWithSkip(_dragDataHandleService.HandleDragData)
+                    .AddTo(_compositeDisposable);
+            });
         }
 
         private void Initialize()
@@ -75,11 +84,13 @@ namespace Game.Infrastructure.StateMachine.GameStates
             _figuresScrollView =
                 _currentLevelDataProvider.CurrentLevelData.GetPrefabsComponent<FiguresScrollView>(Prefab.FiguresScroll);
             
-           _figuresScrollPresenter = new FiguresScrollPresenter(
+           var figuresScrollPresenter = new FiguresScrollPresenter(
                listOfFigures,
                _figureUIFactory,
-               _figuresScrollView
+               _figuresScrollView,
+               _figureDataFactory
                );
+           _dragFigureDataCreators.Add(figuresScrollPresenter);
         }
 
         private void InitializeTowerPresenter()
@@ -87,7 +98,8 @@ namespace Game.Infrastructure.StateMachine.GameStates
             _towerView = _towerViewFactory.Create();
             var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Tower);
             
-            _towerPresenter = new TowerPresenter(listOfFigures, _towerView, _figureSpriteView);
+            var towerPresenter = new TowerPresenter(listOfFigures, _towerView, _figureSpriteView);
+            _dragFigureDataCreators.Add(towerPresenter);
         }
 
         public void Exit()
