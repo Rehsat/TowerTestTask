@@ -2,6 +2,8 @@
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
 using Game.Core.Figures.View.UI;
+using Game.Infrastructure.AssetsManagement;
+using Game.Services.Cameras;
 using UnityEngine;
 using Zenject;
 
@@ -10,14 +12,20 @@ namespace Game.Services.DragAndDrop
     public class DragDataHandleService : IDragDataHandleService
     {
         private readonly IFactory<FigureData, FigureUI> _figureUiFactory;
+        private readonly ICameraService _cameraService;
         private readonly IDragService _dragService;
+        private readonly ParticleSystem _explosionParticle;
 
         public DragDataHandleService(
             IFactory<FigureData, FigureUI> figureUiFactory,
+            IPrefabsProvider prefabProvider,
+            ICameraService cameraService,
             IDragService dragService)
         {
             _figureUiFactory = figureUiFactory;
+            _cameraService = cameraService;
             _dragService = dragService;
+            _explosionParticle = prefabProvider.GetPrefabsComponent<ParticleSystem>(Prefab.ExplosionParticle);
         }
         public void HandleDragData(IDragData dragData)
         {
@@ -38,8 +46,17 @@ namespace Game.Services.DragAndDrop
                 return;
             }
                 
-            var dragView = new DraggableView(dragFigureData, figureRect, null);
+            var dragView = new DraggableView(dragFigureData, figureRect, OnComplete);
             _dragService.StartDrag(dragView);
+
+            void OnComplete(Vector3 completePosition, DropResult result)
+            {
+                if(result == DropResult.Success) return;
+                
+                var particleSpawnPosition = _cameraService.MainCamera.ScreenToWorldPoint(completePosition);
+                var particle = Object.Instantiate(_explosionParticle, particleSpawnPosition, Quaternion.identity);
+                Object.Destroy(particle, particle.main.duration+1); 
+            }
         }
     }
 }

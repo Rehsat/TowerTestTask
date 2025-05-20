@@ -9,6 +9,6 @@
         TowerView =  4,
         FigureSprite = 5,
         Blackhole = 6,
-        
+        ExplosionParticle = 7,
     }
 }

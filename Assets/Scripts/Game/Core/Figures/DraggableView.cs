@@ -1,5 +1,7 @@
-﻿using Game.Services.DragAndDrop;
+﻿using System;
+using Game.Services.DragAndDrop;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Game.Core.Figures
 {
@@ -7,15 +9,18 @@ namespace Game.Core.Figures
     {
         private readonly IDragData _dragData;
         private readonly RectTransform _transformToDrag;
+        private readonly Action<Vector3, DropResult> _onDragComplete;
         private readonly ParticleSystem _failParticle;
         public RectTransform TransformToDrag => _transformToDrag;
         public IDragData DragData => _dragData;
 
-        public DraggableView(IDragData dragData, RectTransform transformToDrag, ParticleSystem failParticle)
+        public DraggableView(IDragData dragData, 
+            RectTransform transformToDrag, 
+            Action<Vector3, DropResult> onDragComplete = null)
         {
             _dragData = dragData;
             _transformToDrag = transformToDrag;
-            _failParticle = failParticle;
+            _onDragComplete = onDragComplete;
         }
         public void OnDragStart()
         {
@@ -25,12 +30,9 @@ namespace Game.Core.Figures
 
         public void OnDragComplete(DropResult dropResult)
         {
-            if (dropResult == DropResult.Fail)
-            {
-                //_failParticle.transform.position = _transformToDrag.transform.position;
-            }
             _transformToDrag.gameObject.SetActive(false);
             _dragData.SendCallback(dropResult);
+            _onDragComplete?.Invoke(_transformToDrag.position, dropResult);
         }
     }
 }
