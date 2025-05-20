@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _figureSprites:
     m_val: 7
-    m_keys: 000000000100000002000000030000000400000005000000
+    m_keys: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000
     m_values:
     - {fileID: 0}
     - {fileID: 429577413, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
@@ -22,3 +22,18 @@ MonoBehaviour:
     - {fileID: -71834725, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
     - {fileID: -1565572723, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
     - {fileID: 1863301824, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1220379816, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: -1449603305, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1382299991, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1771545271, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1201018571, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 387924420, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1961476779, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1819893350, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 240752440, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 641171541, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: -1744620675, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: -924936088, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 2145661880, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: 1281979207, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
+    - {fileID: -1621617646, guid: f98569de843efd043a3a3fc59ef3d1bd, type: 3}
