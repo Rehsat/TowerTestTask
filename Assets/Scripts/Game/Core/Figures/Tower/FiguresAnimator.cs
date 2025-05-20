@@ -13,18 +13,21 @@ namespace Game.Core.Figures.Tower
             
             var startPosition = transformToAnimate.position;
             
-            // магические числа потому, что хочу себе позволить немного побаловаться)
             var jumpTween =
                 transformToAnimate
                     .DOMoveY(transformToAnimate.position.y + 1, 0.5f)
+                    
                     .SetEase(Ease.OutCubic);
             var returnTween = 
                 transformToAnimate
                     .DOMove(startPosition, 0.4f)
                     .SetEase(Ease.InCubic);
             
+            var appearTween = GetAppearAnimation(transformToAnimate);
+            
             _figuresAnimationSequence
                 .Append(jumpTween)
+                .Join(appearTween)
                 .Append(returnTween)
                 .OnKill((() => transformToAnimate.position = startPosition));
             _figuresAnimationSequence.Play();
@@ -42,6 +45,15 @@ namespace Game.Core.Figures.Tower
                 .OnKill(() => transformToAnimate.localPosition = resultPosition);
 
             _figuresAnimationSequence.Play();
+        }
+
+        private Tween GetAppearAnimation(Transform transformToAnimate)
+        {
+            var resultScale = Vector3.one;
+            return transformToAnimate
+                .DOScale(resultScale, 0.3f)
+                .SetEase(Ease.OutBack)
+                .OnKill(() => transformToAnimate.localScale = resultScale);
         }
 
         private void ResetSequence()

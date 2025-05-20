@@ -120,6 +120,7 @@ namespace Game.Core.Figures.Tower
                 return;
             }
             
+            _figuresAnimator.KillCurrentAnimation();
             var view = _figureSpriteViewFactory.Create(figureData);
             view.name = view.name + _figureSpriteViews.Count;
             view.SetInteractableData(figureData, _onStartDragFigure);
@@ -137,7 +138,6 @@ namespace Game.Core.Figures.Tower
             
             _towerView.SetLastViewTransform(figureSpriteView.transform);
             _figureSpriteViews.Add(figureSpriteView);
-            figureSpriteView.DoPlaceAnimation();
             _figuresAnimator.DoJumpAnimation(figureSpriteView.transform);
             LogNewFigureAdded();
         }

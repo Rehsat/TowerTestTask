@@ -21,6 +21,7 @@ using Game.Services.Localization;
 using Game.Services.LogService;
 using Game.Services.OutOfScreenCheck;
 using Game.Services.RaycastService;
+using Game.Services.Save;
 using Infrastructure.StateMachine;
 using UnityEngine;
 using Zenject;
@@ -80,12 +81,14 @@ namespace Game
             Container.Bind<IInputService>().To<InputService>().FromNew().AsSingle();
             Container.Bind<IDragService>().To<DragAndDropService>().FromNew().AsSingle();
             Container.BindInterfacesAndSelfTo<DragDataHandleService>().FromNew().AsSingle();
-            Container.Bind<IFiguresListsContainerService>().To<FiguresListsContainerService>().FromNew().AsSingle();
+            Container.BindInterfacesAndSelfTo<FiguresListsContainerService>().FromNew().AsSingle();
             Container.Bind<IOutOfScreenCheckService>().To<OutOfScreenCheckService>().FromNew().AsSingle();
             Container.Bind<ILocalizationService>().To<MockLocalizationService>().FromNew().AsSingle();
             Container.Bind<ILogService>().To<LogService>().FromNew().AsSingle();
+            Container.Bind<IDataSerializer>().To<JsonDataSerializer>().FromNew().AsSingle();
             
             Container.Bind<IInteractService>().To<InteractService>().FromNew().AsSingle().NonLazy();
+            Container.Bind<ISaveService>().To<SaveService>().FromNew().AsSingle();
         }
 
         private void InstallStateMachine()

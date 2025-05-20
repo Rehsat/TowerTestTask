@@ -1,4 +1,6 @@
-﻿using UniRx;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UniRx;
 
 namespace Game.Core.Figures.Data
 {
@@ -7,5 +9,6 @@ namespace Game.Core.Figures.Data
         public IReadOnlyReactiveCollection<FigureData> FigureDatas { get; }
         public void AddData(FigureData figureData);
         public void RemoveData(FigureData figureData);
+        public void SetData(IEnumerable<FigureData> collection);
     }
 }

@@ -8,11 +8,13 @@ namespace Game.Core.Figures.Data
     [Serializable]
     public class FigureData
     {
-        private FigureConfig _config;
+        [SerializeField] private FigureConfig _config;
+        [SerializeField] private Sprite _sprite;
+        [SerializeField] private float _xMovementPercent;
         
         public FigureConfig Config => _config;
-        public Sprite Sprite { get; }
-        public float XMovementPercent { get; }
+        public Sprite Sprite => _sprite;
+        public float XMovementPercent => _xMovementPercent;
 
         private const float X_MOVEMENT_PERCENT_VARIATY = 45; 
         //В ТЗ написано "не больше 50", но 45 < 50, так что пункт вывполняется
@@ -20,8 +22,8 @@ namespace Game.Core.Figures.Data
         public FigureData(FigureConfig config, Sprite sprite)
         {
             _config = config;
-            Sprite = sprite;
-            XMovementPercent = 
+            _sprite = sprite;
+            _xMovementPercent = 
                 Random.Range(-X_MOVEMENT_PERCENT_VARIATY, X_MOVEMENT_PERCENT_VARIATY);
         }
     }

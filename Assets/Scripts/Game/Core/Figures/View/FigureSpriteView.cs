@@ -31,21 +31,7 @@ namespace Game.Core.Figures.View
             _figureData = figureData;
             _onInteract = onInteract;
         }
-
-        public void DoPlaceAnimation()
-        {
-            var resultScale = Vector3.one;
-            if (_placeTween == null)
-                _placeTween = transform
-                    .DOScale(resultScale, 0.3f)
-                    .SetEase(Ease.OutBack);
-            
-            transform.localScale = Vector3.zero;
-            _placeTween
-                .Play()
-                .OnKill((() => transform.localScale = resultScale));
-        }
-
+        
         public void SetMaskMode(SpriteMaskInteraction spriteMaskInteraction)
         {
             _spriteRenderer.maskInteraction = spriteMaskInteraction;
