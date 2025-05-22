@@ -29,7 +29,6 @@ namespace Game.Core.Figures.Tower
         private ReactiveEvent<FigureData> _onStartDragFigure;
 
         private List<FigureSpriteView> _figureSpriteViews;
-        private Dictionary<FigureData, FigureSpriteView> _figureSpriteViewsByData;
 
         public IReadOnlyReactiveEvent<DragFigureData> OnNewDragFigureData => _onNewDragFigureData;
         public IReadOnlyReactiveEvent<LocalizableLogData> OnNewLogs => _onNewLogs;
@@ -48,7 +47,6 @@ namespace Game.Core.Figures.Tower
             _figuresAnimator = new FiguresAnimator();
             _compositeDisposable = new CompositeDisposable();
             _figureSpriteViews = new List<FigureSpriteView>();
-            _figureSpriteViewsByData = new Dictionary<FigureData, FigureSpriteView>();
             _onStartDragFigure = new ReactiveEvent<FigureData>();
             _onNewDragFigureData = new ReactiveEvent<DragFigureData>();
             _onNewLogs = new ReactiveEvent<LocalizableLogData>();
@@ -58,17 +56,17 @@ namespace Game.Core.Figures.Tower
 
         private void Initialize()
         {
-            _listOfFiguresData.FigureDatas.ToList().ForEach(AddDataToViews);
+            _listOfFiguresData.FigureDatas.ToList().ForEach(ShowDataInTower);
             
             _listOfFiguresData.FigureDatas
                 .ObserveAdd()
-                .Subscribe(figureData => AddDataToViews(figureData.Value))
+                .Subscribe(figureData => ShowDataInTower(figureData.Value))
                 .AddTo(_compositeDisposable);
             
             _listOfFiguresData.FigureDatas
                 .ObserveRemove()
                 .Subscribe(figureData =>
-                    RemoveData(figureData.Index))
+                    OnDataRemoved(figureData.Index))
                 .AddTo(_compositeDisposable);
 
             _towerView.OnDroppedNewObject
@@ -96,12 +94,6 @@ namespace Game.Core.Figures.Tower
             
             //Тут можно проверить пункт из ТЗ про обновляемость (про то что можно поменять логику на "ставить кубики только того же цвета")
             // проверяем есть ли что-то в списке фигур и если есть, то сравниваем цвет даты ее и дропнутой. 
-            
-            if (_figureSpriteViewsByData.ContainsKey(dragFigureData.FigureData))
-            {
-                draggableView.OnDragComplete(DropResult.Fail);
-                return;
-            }
             if (_ofScreenCheckService.IsObjectOutOfScreen(_towerView.DropContainerTransform))
             {
                 draggableView.OnDragComplete(DropResult.Fail);
@@ -113,20 +105,14 @@ namespace Game.Core.Figures.Tower
             draggableView.OnDragComplete(DropResult.Success);
         }
 
-        private void AddDataToViews(FigureData figureData)
+        private void ShowDataInTower(FigureData figureData)
         {
-            if (_figureSpriteViewsByData.ContainsKey(figureData))
-            {
-                var buggedView = _figureSpriteViewsByData[figureData];
-                buggedView.name = GetHashCode().ToString();
-                throw new Exception($"You tried to add already added data {buggedView.name}");
-            }
-
             _figuresAnimator.KillCurrentAnimation();
+            
             var view = _figureSpriteViewFactory.Create(figureData);
             view.name = view.name + _figureSpriteViews.Count;
             view.SetInteractableData(figureData, _onStartDragFigure);
-            _figureSpriteViewsByData.Add(figureData, view);
+            
             AddFigureViewToList(figureData, view);
         }
 
@@ -156,7 +142,7 @@ namespace Game.Core.Figures.Tower
                 new Vector2(xPosition, figureToConnectWith.localScale.y) * 2;
         }
 
-        private void RemoveData(int index)
+        private void OnDataRemoved(int index)
         {
             if (IsIndexValid(index) == false) 
                 return;
@@ -205,11 +191,9 @@ namespace Game.Core.Figures.Tower
         {
             var dragData = new DragFigureData(figureData, OnComplete, DragFigureSource.Tower);
             _onNewDragFigureData.Notify(dragData);
-
+            _listOfFiguresData.RemoveData(figureData);
             void OnComplete(DropResult result)
             {
-                if (result == DropResult.Success)
-                    _listOfFiguresData.RemoveData(figureData);
             }
         }
 
