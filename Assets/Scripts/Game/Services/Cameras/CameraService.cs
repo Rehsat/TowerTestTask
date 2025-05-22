@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using Game.Infrastructure.ScreenScale;
+using UniRx;
+using UnityEngine;
+using Zenject;
 
 namespace Game.Services.Cameras
 {

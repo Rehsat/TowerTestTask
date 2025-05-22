@@ -11,6 +11,7 @@ using Game.Infrastructure;
 using Game.Infrastructure.AssetsManagement;
 using Game.Infrastructure.Configs;
 using Game.Infrastructure.CurrentLevelData;
+using Game.Infrastructure.ScreenScale;
 using Game.Infrastructure.StateMachine.GameStates;
 using Game.Services.Cameras;
 using Game.Services.Canvases;
@@ -34,7 +35,6 @@ namespace Game
         [SerializeField] private CoroutineStarter _coroutineStarter;
         [SerializeField] private CameraService _cameraService;
         [SerializeField] private CanvasLayersProvider canvasLayersProvider;
-        [SerializeField] private PrefabsTransformContainer _prefabsTransformContainer;
         public override void InstallBindings()
         {
             InstallConfig(_config);
@@ -55,8 +55,8 @@ namespace Game
         
         private void InstallInfrastructure()
         {
-            Container.Bind<IPrefabsTransformContainer>().FromInstance(_prefabsTransformContainer).AsSingle();
             Container.Bind<ICoroutineStarter>().To<CoroutineStarter>().FromInstance(_coroutineStarter).AsSingle();
+            
             Container.Bind<ICurrentLevelDataProvider>().To<CurrentLevelDataProvider>().FromNew().AsSingle();
             Container.Bind<ISceneLoader>().To<SceneLoader>().FromNew().AsSingle();
         }
@@ -77,6 +77,8 @@ namespace Game
         {
             Container.Bind<ICanvasLayersProvider>().To<CanvasLayersProvider>().FromInstance(canvasLayersProvider).AsSingle();
             Container.Bind<ICameraService>().To<CameraService>().FromInstance(_cameraService).AsSingle();
+            
+            Container.Bind<IScreenScaleCalculator>().To<ScreenAdjustService>().FromNew().AsSingle();
             Container.Bind<IRaycastService>().To<RaycastService>().FromNew().AsSingle();
             Container.Bind<IInputService>().To<InputService>().FromNew().AsSingle();
             Container.Bind<IDragService>().To<DragAndDropService>().FromNew().AsSingle();
