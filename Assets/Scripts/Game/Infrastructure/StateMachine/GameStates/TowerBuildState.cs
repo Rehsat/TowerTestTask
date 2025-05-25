@@ -26,18 +26,17 @@ namespace Game.Infrastructure.StateMachine.GameStates
 {
     public class TowerBuildState : IGameState
     {
-        private readonly IFactory<FigureData, FigureUI> _figureUIFactory;
         private readonly IFactory<FigureData, FigureSpriteView> _figureSpriteViewFactory;
         private readonly IFactory<FiguresScrollView> _figureScrollViewFactory;
         private readonly IFactory<TowerView> _towerViewFactory;
         private readonly IFactory<BlackHoleView> _blackHoleFactory;
-        
+        private readonly IFactory<FiguresScrollPresenter> _figuresScrollPresenterFactory;
+
         private readonly IDragDataHandleService _dragDataHandleService;
-        private readonly IFiguresListsContainerService _figuresListsContainerService;
+        private readonly IFiguresListsProvider _figuresListsProvider;
         private readonly ICurrentLevelDataProvider _currentLevelDataProvider;
         private readonly IOutOfScreenCheckService _ofScreenCheckService;
         private readonly ILogService _logService;
-        private readonly IFactory<FigureConfig, FigureData> _figureDataFactory;
 
         private List<ILogsCreator> _logsCreators;
         private List<IDragFigureDataCreator> _dragFigureDataCreators;
@@ -50,28 +49,27 @@ namespace Game.Infrastructure.StateMachine.GameStates
         // точно не знаю как это тут поправить, хотелсь бы совета более опытного человека
         public TowerBuildState(
             IDragDataHandleService dragDataHandleService,
-            IFiguresListsContainerService figuresListsContainerService,
+            IFiguresListsProvider figuresListsProvider,
             ICurrentLevelDataProvider currentLevelDataProvider,
             IOutOfScreenCheckService ofScreenCheckService,
             ILogService logService,
             
-            IFactory<FigureConfig, FigureData> figureDataFactory,
-            IFactory<FigureData, FigureUI> figureUIFactory,
             IFactory<FigureData, FigureSpriteView> figureSpriteViewFactory,
             IFactory<TowerView> towerViewFactory,
-            IFactory<BlackHoleView> blackHoleFactory
+            IFactory<BlackHoleView> blackHoleFactory,
+            IFactory<FiguresScrollPresenter> figuresScrollPresenterFactory
             )
         {
+            _logService = logService;
             _dragDataHandleService = dragDataHandleService;
-            _figureUIFactory = figureUIFactory;
+            _figuresListsProvider = figuresListsProvider;
+            _currentLevelDataProvider = currentLevelDataProvider;
+            _ofScreenCheckService = ofScreenCheckService;
+            
             _figureSpriteViewFactory = figureSpriteViewFactory;
             _towerViewFactory = towerViewFactory;
             _blackHoleFactory = blackHoleFactory;
-            _figuresListsContainerService = figuresListsContainerService;
-            _currentLevelDataProvider = currentLevelDataProvider;
-            _ofScreenCheckService = ofScreenCheckService;
-            _logService = logService;
-            _figureDataFactory = figureDataFactory;
+            _figuresScrollPresenterFactory = figuresScrollPresenterFactory;
             
             _dragFigureDataCreators = new List<IDragFigureDataCreator>();
             _objectsToActivate = new List<GameObject>();
@@ -112,26 +110,14 @@ namespace Game.Infrastructure.StateMachine.GameStates
         }
         private void InitializeScrollPresenter()
         {
-            var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Scroll);
-
-            var figuresScrollView =
-                _currentLevelDataProvider.CurrentLevelData.GetPrefabsComponent<FiguresScrollView>(Prefab.FiguresScroll);
-            
-           var figuresScrollPresenter = new FiguresScrollPresenter(
-               listOfFigures,
-               _figureUIFactory,
-               figuresScrollView,
-               _figureDataFactory
-               );
-           
-           _dragFigureDataCreators.Add(figuresScrollPresenter);
-           _objectsToActivate.Add(figuresScrollView.gameObject);
+            var figuresScrollPresenter = _figuresScrollPresenterFactory.Create();
+            _dragFigureDataCreators.Add(figuresScrollPresenter);
         }
 
         private void InitializeTowerPresenter()
         {
             var towerView = _towerViewFactory.Create();
-            var listOfFigures = _figuresListsContainerService.GetListOfFigures(FigureListContainerId.Tower);
+            var listOfFigures = _figuresListsProvider.GetListOfFigures(FigureListContainerId.Tower);
             
             var towerPresenter = new TowerPresenter(listOfFigures, 
                 towerView,

@@ -74,6 +74,7 @@ namespace Game
             Container.Bind<IFactory<FigureConfig, FigureData>>().To<FigureDataFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FigureData, FigureUI>>().To<FigureUiViewFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FigureData, FigureSpriteView>>().To<FigureSpriteViewFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<FiguresScrollPresenter>>().To<FiguresScrollPresenterFactory>().FromNew().AsSingle();
         }
 
         private void InstallServices()
@@ -86,7 +87,7 @@ namespace Game
             Container.Bind<IInputService>().To<InputService>().FromNew().AsSingle();
             Container.Bind<IDragService>().To<DragAndDropService>().FromNew().AsSingle();
             Container.BindInterfacesAndSelfTo<DragDataHandleService>().FromNew().AsSingle();
-            Container.BindInterfacesAndSelfTo<FiguresListsContainerService>().FromNew().AsSingle();
+            Container.BindInterfacesAndSelfTo<FiguresListsProvider>().FromNew().AsSingle();
             Container.Bind<IOutOfScreenCheckService>().To<OutOfScreenCheckService>().FromNew().AsSingle();
             Container.Bind<ILocalizationService>().To<MockLocalizationService>().FromNew().AsSingle();
             Container.Bind<ILogService>().To<LogService>().FromNew().AsSingle();

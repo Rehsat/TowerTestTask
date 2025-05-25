@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Services.FiguresCollections
 {
-    public interface IFiguresListsContainerService
+    public interface IFiguresListsProvider
     {
         public IListOfFiguresData GetListOfFigures(FigureListContainerId id);
     }

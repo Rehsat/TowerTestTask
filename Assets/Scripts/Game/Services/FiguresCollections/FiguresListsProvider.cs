@@ -10,13 +10,13 @@ using Zenject;
 
 namespace Game.Services.FiguresCollections
 {
-    public class FiguresListsContainerService : IFiguresListsContainerService, ISavable
+    public class FiguresListsProvider : IFiguresListsProvider, ISavable
     {
         private readonly IFigureListConfigById _listConfigById;
         private readonly IFactory<FigureConfig, FigureData> _figureDataFactory;
         private Dictionary<FigureListContainerId, IListOfFiguresData> _dictionaryOfLists;
         public SaveDataId Id => SaveDataId.ListOfFiguresData;
-        public FiguresListsContainerService(
+        public FiguresListsProvider(
             IFigureListConfigById listConfigById, 
             IFactory<FigureConfig, FigureData> figureDataFactory)
         {

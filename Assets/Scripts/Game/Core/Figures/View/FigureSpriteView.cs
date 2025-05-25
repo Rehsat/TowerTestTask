@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using EasyFramework.ReactiveEvents;
+using EasyFramework.ReactiveTriggers;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.UI;
 using UniRx;
@@ -23,7 +24,9 @@ namespace Game.Core.Figures.View
             _spriteRenderer.sprite = sprite;
         }
 
-        public void SetInteractableData(FigureData figureData, ReactiveEvent<FigureData> onInteract)
+        public void SetInteractableData(FigureData figureData
+            , ReactiveEvent<FigureData> onInteract
+            , ReactiveTrigger onInteractCompleted = null)
         {
             if (_touchDetectorWasInitialized == false)
                 InitializeTouchDetector();
