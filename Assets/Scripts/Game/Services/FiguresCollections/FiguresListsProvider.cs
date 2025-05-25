@@ -71,13 +71,13 @@ namespace Game.Services.FiguresCollections
                     .AddTo(_compositeDisposable);
             }
         }
-        
+
         public IListOfFiguresData GetListOfFigures(FigureListContainerId id)
         {
             return _dictionaryOfLists[id];
         }
         
-        //Вообще для этой истории ниже лучше выделить отдельный класс, но тут не особо много логики, так что решил немного нарушить SRP в пользу простоты
+        //Пo SRP для этой истории ниже лучше выделить отдельный класс, но я решил оставить так, т.к. мне кажется в данном случае это будет оверинжениринг.
         public void Save(SaveData saveData)
         {
             saveData.DictionaryOfFiguresDatas =
@@ -100,10 +100,24 @@ namespace Game.Services.FiguresCollections
             var towerId = FigureListContainerId.Tower;
             if(dictionaryOfDatas.ContainsKey(towerId) == false) return;
             var towerSavedFigures = dictionaryOfDatas[towerId];
+            var actualListOfFigures = ConvertSavedListToData(towerSavedFigures);
+            
             var towerFigures = _dictionaryOfLists[towerId];
-            towerFigures.SetData(towerSavedFigures.FigureDatas);
+            towerFigures.SetData(actualListOfFigures);
         }
 
+        private List<FigureData> ConvertSavedListToData(SerializableListOfFigureData savedList)
+        {
+            var listOfData = new List<FigureData>();
+            savedList.FigureDatas.ForEach((savedData =>
+            {
+                var actualData = _figureDataFactory.Create(savedData.Config);
+                actualData.SetXMovementPercent(savedData.XMovementPercent);
+                listOfData.Add(actualData);
+            }));
+            
+            return listOfData;
+        }
         public void Dispose()
         {
             _onSaveRequired?.Dispose();

@@ -26,5 +26,10 @@ namespace Game.Core.Figures.Data
             _xMovementPercent = 
                 Random.Range(-X_MOVEMENT_PERCENT_VARIATY, X_MOVEMENT_PERCENT_VARIATY);
         }
+
+        public void SetXMovementPercent(float xMovementPercent)
+        {
+            _xMovementPercent = xMovementPercent;
+        }
     }
 }
