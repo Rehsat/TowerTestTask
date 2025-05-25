@@ -26,16 +26,13 @@ namespace Game.Infrastructure.StateMachine.GameStates
 {
     public class TowerBuildState : IGameState
     {
-        private readonly IFactory<FigureData, FigureSpriteView> _figureSpriteViewFactory;
         private readonly IFactory<FiguresScrollView> _figureScrollViewFactory;
-        private readonly IFactory<TowerView> _towerViewFactory;
-        private readonly IFactory<BlackHoleView> _blackHoleFactory;
         private readonly IFactory<FiguresScrollPresenter> _figuresScrollPresenterFactory;
+        private readonly IFactory<TowerPresenter> _towerPresenterFactory;
+        private readonly IFactory<BlackHolePresenter> _blackHolePresenterFactory;
 
         private readonly IDragDataHandleService _dragDataHandleService;
-        private readonly IFiguresListsProvider _figuresListsProvider;
         private readonly ICurrentLevelDataProvider _currentLevelDataProvider;
-        private readonly IOutOfScreenCheckService _ofScreenCheckService;
         private readonly ILogService _logService;
 
         private List<ILogsCreator> _logsCreators;
@@ -49,27 +46,21 @@ namespace Game.Infrastructure.StateMachine.GameStates
         // точно не знаю как это тут поправить, хотелсь бы совета более опытного человека
         public TowerBuildState(
             IDragDataHandleService dragDataHandleService,
-            IFiguresListsProvider figuresListsProvider,
             ICurrentLevelDataProvider currentLevelDataProvider,
-            IOutOfScreenCheckService ofScreenCheckService,
             ILogService logService,
             
-            IFactory<FigureData, FigureSpriteView> figureSpriteViewFactory,
-            IFactory<TowerView> towerViewFactory,
-            IFactory<BlackHoleView> blackHoleFactory,
-            IFactory<FiguresScrollPresenter> figuresScrollPresenterFactory
+            IFactory<FiguresScrollPresenter> figuresScrollPresenterFactory,
+            IFactory<TowerPresenter> towerPresenterFactory,
+            IFactory<BlackHolePresenter> blackHolePresenterFactory
             )
         {
             _logService = logService;
             _dragDataHandleService = dragDataHandleService;
-            _figuresListsProvider = figuresListsProvider;
             _currentLevelDataProvider = currentLevelDataProvider;
-            _ofScreenCheckService = ofScreenCheckService;
-            _figureSpriteViewFactory = figureSpriteViewFactory;
-            _towerViewFactory = towerViewFactory;
-            _blackHoleFactory = blackHoleFactory;
             _figuresScrollPresenterFactory = figuresScrollPresenterFactory;
-            
+            _towerPresenterFactory = towerPresenterFactory;
+            _blackHolePresenterFactory = blackHolePresenterFactory;
+
             _dragFigureDataCreators = new List<IDragFigureDataCreator>();
             _objectsToActivate = new List<GameObject>();
             _logsCreators = new List<ILogsCreator>();
@@ -115,28 +106,18 @@ namespace Game.Infrastructure.StateMachine.GameStates
 
         private void InitializeTowerPresenter()
         {
-            var towerView = _towerViewFactory.Create();
-            var listOfFigures = _figuresListsProvider.GetListOfFigures(FigureListContainerId.Tower);
-            
-            var towerPresenter = new TowerPresenter(listOfFigures, 
-                towerView,
-                _ofScreenCheckService,
-                _figureSpriteViewFactory);
-            
+            var towerPresenter = _towerPresenterFactory.Create();
             var towerLogger = new TowerBuildLogger(towerPresenter);
             
             _dragFigureDataCreators.Add(towerPresenter);
             _logsCreators.Add(towerLogger);
-            _objectsToActivate.Add(towerView.gameObject);
         }
 
         private void InitializeBlackHole()
         {
-            var blackHoleView = _blackHoleFactory.Create();
-            var blackHolePresenter = new BlackHolePresenter(blackHoleView, _figureSpriteViewFactory);
+            var blackHolePresenter =_blackHolePresenterFactory.Create();
             
             _logsCreators.Add(blackHolePresenter);
-            _objectsToActivate.Add(blackHoleView.gameObject);
         }
 
         private void InitializeLogger()

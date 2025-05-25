@@ -17,8 +17,7 @@ namespace Game.Core.Figures.View.UI
         private ReactiveEvent<FigureData> _onFigureInteracted;
         private ReactiveTrigger _onInteractCompleted;
         private FigureData _figureData;
-
-        public FigureData FigureData => _figureData;
+        
         public void SetSprite(Sprite sprite)
         {
             _icon.sprite = sprite;
@@ -31,6 +30,7 @@ namespace Game.Core.Figures.View.UI
             _figureData = figureData;
             _onFigureInteracted = onInteract;
             _onInteractCompleted = onInteractCompleted;
+            _icon.raycastTarget = true;
         }
 
         public void OnPointerDown(PointerEventData eventData)

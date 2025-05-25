@@ -68,13 +68,16 @@ namespace Game
         {
             Container.Bind<IFactory<Canvas>>().To<CanvasFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FiguresScrollView>>().To<FigureScrollViewFactory>().FromNew().AsSingle();
-            Container.Bind<IFactory<TowerView>>().To<TowerViewFactory>().FromNew().AsSingle();
-            Container.Bind<IFactory<BlackHoleView>>().To<BlackHoleFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<ITowerView>>().To<TowerViewFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<IBlackHoleView>>().To<BlackHoleFactory>().FromNew().AsSingle();
 
             Container.Bind<IFactory<FigureConfig, FigureData>>().To<FigureDataFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FigureData, FigureUI>>().To<FigureUiViewFactory>().FromNew().AsSingle();
             Container.Bind<IFactory<FigureData, FigureSpriteView>>().To<FigureSpriteViewFactory>().FromNew().AsSingle();
+            
             Container.Bind<IFactory<FiguresScrollPresenter>>().To<FiguresScrollPresenterFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<TowerPresenter>>().To<TowerPresenterFactory>().FromNew().AsSingle();
+            Container.Bind<IFactory<BlackHolePresenter>>().To<BlackHolePresenterFactory>().FromNew().AsSingle();
         }
 
         private void InstallServices()
