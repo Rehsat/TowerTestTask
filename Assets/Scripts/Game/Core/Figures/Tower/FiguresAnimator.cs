@@ -12,16 +12,16 @@ namespace Game.Core.Figures.Tower
             ResetSequence();
             
             transformToAnimate.localScale = Vector3.zero;
-            var startPosition = transformToAnimate.position;
+            var startPosition = transformToAnimate.localPosition;
             
             var jumpTween =
                 transformToAnimate
-                    .DOMoveY(transformToAnimate.position.y + 1, 0.5f)
-                    
+                    .DOLocalMoveY(startPosition.y + 1, 0.5f)
                     .SetEase(Ease.OutCubic);
+            
             var returnTween = 
                 transformToAnimate
-                    .DOMove(startPosition, 0.4f)
+                    .DOLocalMove(startPosition, 0.4f)
                     .SetEase(Ease.InCubic);
             
             var appearTween = GetAppearAnimation(transformToAnimate);
@@ -30,7 +30,7 @@ namespace Game.Core.Figures.Tower
                 .Append(jumpTween)
                 .Join(appearTween)
                 .Append(returnTween)
-                .OnKill((() => transformToAnimate.position = startPosition));
+                .OnKill((() => transformToAnimate.localPosition = startPosition));
             _figuresAnimationSequence.Play();
         }
         public void DoDropAnimation(Transform transformToAnimate, Vector2 resultPosition)
@@ -54,7 +54,11 @@ namespace Game.Core.Figures.Tower
             return transformToAnimate
                 .DOScale(resultScale, 0.3f)
                 .SetEase(Ease.OutBack)
-                .OnKill(() => transformToAnimate.localScale = resultScale);
+                .OnKill(() =>
+                {
+                    Debug.LogError(123);
+                    transformToAnimate.localScale = resultScale;
+                });
         }
 
         private void ResetSequence()

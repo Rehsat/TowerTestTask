@@ -72,10 +72,11 @@ namespace Game.Services.DragAndDrop
             _draggableCompositeDisposable = new CompositeDisposable();
 
             newDraggable.TransformToDrag.SetParent(_canvasRectTransform.transform);
-            newDraggable.OnDragStart();
             _inputService.OnInputUpdate
-                .SubscribeWithSkip(OnInputUpdate)
+                .Subscribe(OnInputUpdate)
                 .AddTo(_draggableCompositeDisposable);
+            
+            newDraggable.OnDragStart();
         }
         
         private void OnInputUpdate()
@@ -98,10 +99,10 @@ namespace Game.Services.DragAndDrop
         
         private void OnDragEnded()
         {
-            NotifyDropContainer();
+            FindAndNotifyDropContainer();
         }
 
-        private void NotifyDropContainer()
+        private void FindAndNotifyDropContainer()
         {
             var dropScreenPosition = _inputService.PointerPosition;
             
@@ -118,12 +119,18 @@ namespace Game.Services.DragAndDrop
                 return;
 
             if (dropContainer == null)
-                _currentDraggable.Value.OnDragComplete(DropResult.Fail);
+                _currentDraggable.Value.DragComplete(DropResult.Fail);
             else
-                dropContainer.OnDrop(_currentDraggable.Value);
+                HandleDropInContainer(dropContainer, _currentDraggable.Value);
             
             _draggableCompositeDisposable?.Dispose();
             _currentDraggable.Value = null;
+        }
+
+        private void HandleDropInContainer(IDropContainer container, IDraggable draggable)
+        {
+            draggable.DoSuccessDropAnimation((() =>
+                container.OnDrop(draggable)));
         }
 
         public void Dispose()

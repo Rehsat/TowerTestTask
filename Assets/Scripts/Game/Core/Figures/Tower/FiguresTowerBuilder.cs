@@ -18,6 +18,7 @@ namespace Game.Core.Figures.Tower
 
         public void PlaceNewElementInTower(Transform elementTransform, Vector2 offset)
         {
+            _figuresAnimator.KillCurrentAnimation();
             if (_towerElements.Count > 0)
                 ConnectViewToLast(offset, elementTransform);
             else

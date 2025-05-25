@@ -92,7 +92,7 @@ namespace Game.Core.Figures.Tower
                     HandleNewDragFigureData(draggableView, dragFigureData);
                     return;
                 }
-            draggable.OnDragComplete(DropResult.Fail);
+            draggable.DragComplete(DropResult.Fail);
         }
 
         private void HandleNewDragFigureData(DraggableView draggableView, DragFigureData dragFigureData)
@@ -101,19 +101,17 @@ namespace Game.Core.Figures.Tower
             // проверяем есть ли что-то в списке фигур и если есть, то сравниваем цвет даты ее и дропнутой. 
             if (_ofScreenCheckService.IsObjectOutOfScreen(_towerView.DropContainerTransform))
             {
-                draggableView.OnDragComplete(DropResult.Fail);
+                draggableView.DragComplete(DropResult.Fail);
                 _onFigureOutOfRange.Notify();
                 return;
             }
             
             _listOfFiguresData.AddData(dragFigureData.FigureData);
-            draggableView.OnDragComplete(DropResult.Success);
+            draggableView.DragComplete(DropResult.Success);
         }
 
         private void ShowDataInTower(FigureData figureData)
         {
-            _figuresAnimator.KillCurrentAnimation();
-        
             var view = _figureSpriteViewFactory.Create(figureData);
             view.name = view.name + _figureSpriteViews.Count;
             view.SetInteractableData(figureData, _onStartDragFigure);

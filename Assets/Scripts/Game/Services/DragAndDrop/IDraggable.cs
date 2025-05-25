@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Game.Services.DragAndDrop
 {
@@ -6,6 +7,7 @@ namespace Game.Services.DragAndDrop
     {
         public RectTransform TransformToDrag { get; }
         public void OnDragStart();
-        public void OnDragComplete(DropResult dropResult);
+        public void DoSuccessDropAnimation(Action onComplete);
+        public void DragComplete(DropResult dropResult);
     }
 }

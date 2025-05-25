@@ -44,14 +44,14 @@ namespace Game.Core.BlackHole
                     return;
                 }
             
-            draggable.OnDragComplete(DropResult.Fail);
+            draggable.DragComplete(DropResult.Fail);
         }
 
         private void OnNewDragFigureData(DraggableView draggableView, DragFigureData dragFigureData)
         { 
             if (dragFigureData.Source == DragFigureSource.Scroll)
             {
-                draggableView.OnDragComplete(DropResult.Fail);
+                draggableView.DragComplete(DropResult.Fail);
                 return;
             }
             
@@ -59,7 +59,7 @@ namespace Game.Core.BlackHole
             newFigureSprite.SetMaskMode(SpriteMaskInteraction.VisibleInsideMask); // думаю в теории это можно перенести во вьюху
             _blackHoleView.DoSuckAnimation(newFigureSprite.transform, OnSuckComplete);
             
-            draggableView.OnDragComplete(DropResult.Success);
+            draggableView.DragComplete(DropResult.Success);
             void OnSuckComplete()
             {
                 newFigureSprite.ReturnToPool();
