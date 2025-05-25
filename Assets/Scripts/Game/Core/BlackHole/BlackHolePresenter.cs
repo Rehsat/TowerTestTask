@@ -20,6 +20,7 @@ namespace Game.Core.BlackHole
         
         private ReactiveEvent<LocalizableLogData> _onNewLog;
         public IReadOnlyReactiveEvent<LocalizableLogData> OnNewLogs => _onNewLog;
+        
         public BlackHolePresenter(
             IBlackHoleView blackHoleView, 
             IFactory<FigureData, FigureSpriteView> figuresFactory)
@@ -65,6 +66,7 @@ namespace Game.Core.BlackHole
                 LogFigureDestroyed();
             }
         }
+        
         private void LogFigureDestroyed()
         {
             var listOfLogStrings = new List<string>(){"Фигура умерла страшной смертью в пасти черной дыры. Ты ужасен!"};

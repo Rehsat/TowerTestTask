@@ -34,7 +34,8 @@ namespace Game
         [SerializeField] private GameConfig _config;
         [SerializeField] private CoroutineStarter _coroutineStarter;
         [SerializeField] private CameraService _cameraService;
-        [SerializeField] private CanvasLayersProvider canvasLayersProvider;
+        [SerializeField] private CanvasLayersProvider _canvasLayersProvider;
+        [SerializeField] private PrefabsTransformContainer _prefabsTransformContainer;
         public override void InstallBindings()
         {
             InstallConfig(_config);
@@ -56,6 +57,8 @@ namespace Game
         private void InstallInfrastructure()
         {
             Container.Bind<ICoroutineStarter>().To<CoroutineStarter>().FromInstance(_coroutineStarter).AsSingle();
+            Container.Bind<IPrefabsTransformContainer>().To<PrefabsTransformContainer>()
+                .FromInstance(_prefabsTransformContainer);
             
             Container.Bind<ICurrentLevelDataProvider>().To<CurrentLevelDataProvider>().FromNew().AsSingle();
             Container.Bind<ISceneLoader>().To<SceneLoader>().FromNew().AsSingle();
@@ -75,7 +78,7 @@ namespace Game
 
         private void InstallServices()
         {
-            Container.Bind<ICanvasLayersProvider>().To<CanvasLayersProvider>().FromInstance(canvasLayersProvider).AsSingle();
+            Container.Bind<ICanvasLayersProvider>().To<CanvasLayersProvider>().FromInstance(_canvasLayersProvider).AsSingle();
             Container.Bind<ICameraService>().To<CameraService>().FromInstance(_cameraService).AsSingle();
             
             Container.Bind<IScreenScaleCalculator>().To<ScreenAdjustService>().FromNew().AsSingle();

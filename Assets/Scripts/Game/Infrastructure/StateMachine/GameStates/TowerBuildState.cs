@@ -15,6 +15,7 @@ using Game.Services.Canvases;
 using Game.Services.DragAndDrop;
 using Game.Services.FiguresCollections;
 using Game.Services.LogService;
+using Game.Services.LogService.Loggers;
 using Game.Services.OutOfScreenCheck;
 using Infrastructure.StateMachine;
 using UniRx;
@@ -137,8 +138,10 @@ namespace Game.Infrastructure.StateMachine.GameStates
                 _ofScreenCheckService,
                 _figureSpriteViewFactory);
             
+            var towerLogger = new TowerBuildLogger(towerPresenter);
+            
             _dragFigureDataCreators.Add(towerPresenter);
-            _logsCreators.Add(towerPresenter);
+            _logsCreators.Add(towerLogger);
             _objectsToActivate.Add(towerView.gameObject);
         }
 

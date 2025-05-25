@@ -284,7 +284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb266403445348e8920961bf86240a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _positionsRoot: {fileID: 2008457623560209539}
   _positions:
     m_val: 7
     m_keys: 0400000006000000
@@ -375,7 +374,7 @@ MonoBehaviour:
   _config: {fileID: 11400000, guid: c5899111477e5234fb10d02e8aba01ff, type: 2}
   _coroutineStarter: {fileID: 3679039199588043963}
   _cameraService: {fileID: 2068164361556290826}
-  canvasLayersProvider: {fileID: 1934009209832485854}
+  _canvasLayersProvider: {fileID: 1934009209832485854}
   _prefabsTransformContainer: {fileID: 5530721289349338171}
 --- !u!114 &2068164361556290826
 MonoBehaviour:

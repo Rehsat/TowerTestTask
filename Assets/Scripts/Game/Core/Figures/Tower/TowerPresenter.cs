@@ -1,37 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using UniRx;
 using EasyFramework.ReactiveEvents;
+using EasyFramework.ReactiveTriggers;
 using Game.Core.Figures.Data;
 using Game.Core.Figures.View;
 using Game.Services.DragAndDrop;
-using Game.Services.LogService;
 using Game.Services.OutOfScreenCheck;
 using UnityEngine;
 using Zenject;
-using Object = UnityEngine.Object;
 
 namespace Game.Core.Figures.Tower
 {
-    public class TowerPresenter : IDragFigureDataCreator, IDisposable, ILogsCreator
+    public class TowerPresenter : IDragFigureDataCreator, IDisposable
     {
         private readonly IListOfFiguresData _listOfFiguresData;
         private readonly ITowerView _towerView;
+        private readonly FiguresTowerBuilder _towerBuilder;
         private readonly IOutOfScreenCheckService _ofScreenCheckService;
         private readonly IFactory<FigureData, FigureSpriteView> _figureSpriteViewFactory;
 
         private FiguresAnimator _figuresAnimator;
         private CompositeDisposable _compositeDisposable;
-        private ReactiveEvent<DragFigureData> _onNewDragFigureData;
-        private ReactiveEvent<LocalizableLogData> _onNewLogs;
-        private ReactiveEvent<FigureData> _onStartDragFigure;
-
         private List<FigureSpriteView> _figureSpriteViews;
-
+        
+        private ReactiveEvent<DragFigureData> _onNewDragFigureData;
+        private ReactiveEvent<FigureData> _onNewFigureAdded;
+        private ReactiveEvent<int> _onFigureRemoved;
+        private ReactiveEvent<FigureData> _onStartDragFigure;
+        private ReactiveTrigger _onFigureOutOfRange;
+        public IReadOnlyReactiveTrigger OnFigureOutOfRange => _onFigureOutOfRange;
         public IReadOnlyReactiveEvent<DragFigureData> OnNewDragFigureData => _onNewDragFigureData;
-        public IReadOnlyReactiveEvent<LocalizableLogData> OnNewLogs => _onNewLogs;
+        public IReadOnlyReactiveEvent<FigureData> OnNewFigureAdded => _onNewFigureAdded;
+        public IReadOnlyReactiveEvent<int> OnFigureRemoved => _onFigureRemoved;
         
         public TowerPresenter(
             IListOfFiguresData listOfFiguresData, 
@@ -43,13 +45,17 @@ namespace Game.Core.Figures.Tower
             _towerView = towerView;
             _ofScreenCheckService = ofScreenCheckService;
             _figureSpriteViewFactory = figureSpriteViewFactory;
-
-            _figuresAnimator = new FiguresAnimator();
-            _compositeDisposable = new CompositeDisposable();
+            
             _figureSpriteViews = new List<FigureSpriteView>();
+            _figuresAnimator = new FiguresAnimator();
+            _towerBuilder = new FiguresTowerBuilder(_figuresAnimator, towerView);
+            
+            _compositeDisposable = new CompositeDisposable();
+            _onFigureOutOfRange = new ReactiveTrigger();
             _onStartDragFigure = new ReactiveEvent<FigureData>();
+            _onNewFigureAdded = new ReactiveEvent<FigureData>();
             _onNewDragFigureData = new ReactiveEvent<DragFigureData>();
-            _onNewLogs = new ReactiveEvent<LocalizableLogData>();
+            _onFigureRemoved = new ReactiveEvent<int>();
 
             Initialize();
         }
@@ -91,13 +97,12 @@ namespace Game.Core.Figures.Tower
 
         private void HandleNewDragFigureData(DraggableView draggableView, DragFigureData dragFigureData)
         {
-            
             //Тут можно проверить пункт из ТЗ про обновляемость (про то что можно поменять логику на "ставить кубики только того же цвета")
             // проверяем есть ли что-то в списке фигур и если есть, то сравниваем цвет даты ее и дропнутой. 
             if (_ofScreenCheckService.IsObjectOutOfScreen(_towerView.DropContainerTransform))
             {
                 draggableView.OnDragComplete(DropResult.Fail);
-                LogFigureOutOfRange();
+                _onFigureOutOfRange.Notify();
                 return;
             }
             
@@ -108,38 +113,20 @@ namespace Game.Core.Figures.Tower
         private void ShowDataInTower(FigureData figureData)
         {
             _figuresAnimator.KillCurrentAnimation();
-            
+        
             var view = _figureSpriteViewFactory.Create(figureData);
             view.name = view.name + _figureSpriteViews.Count;
             view.SetInteractableData(figureData, _onStartDragFigure);
-            
+        
             AddFigureViewToList(figureData, view);
         }
 
         private void AddFigureViewToList(FigureData figureData, FigureSpriteView figureSpriteView)
         {
-            if (_figureSpriteViews.Count > 0)
-                ConnectViewToLast(figureData, figureSpriteView);
-            else
-                _towerView.PlaceFirstViewTransform(figureSpriteView.transform);
-            
-            
-            _towerView.SetLastViewTransform(figureSpriteView.transform);
             _figureSpriteViews.Add(figureSpriteView);
-            _figuresAnimator.DoJumpAnimation(figureSpriteView.transform);
-            LogNewFigureAdded();
-        }
-
-        private void ConnectViewToLast(FigureData figureData, FigureSpriteView figureSpriteView)
-        {
-            var currentLastView = _figureSpriteViews[^1];
-            var figureToConnectWith = currentLastView.transform;
-            var figureToConnect = figureSpriteView.transform;
-            var xPosition = figureToConnectWith.localScale.x * (figureData.XMovementPercent / 100);
-            
-            figureToConnect.parent = figureToConnectWith;
-            figureToConnect.localPosition = 
-                new Vector2(xPosition, figureToConnectWith.localScale.y) * 2;
+            var offset = new Vector2(figureData.XMovementPercent, 0);
+            _towerBuilder.PlaceNewElementInTower(figureSpriteView.transform, offset);
+            _onNewFigureAdded.Notify(figureData);
         }
 
         private void OnDataRemoved(int index)
@@ -148,18 +135,13 @@ namespace Game.Core.Figures.Tower
                 return;
 
             var viewToRemove = _figureSpriteViews[index];
-            var isLastFigure = _figureSpriteViews.Count - 1 == index ;
-            _figuresAnimator.KillCurrentAnimation();
-
-            if (isLastFigure)
-                HandleLastFigureRemoval(index);
-            else
-                HandleNonLastFigureRemoval(index, viewToRemove);
-            
+            _towerBuilder.RemoveFromTower(index);
+        
             _figureSpriteViews.RemoveAt(index);
             viewToRemove.ReturnToPool();
-            LogFigureRemove(index + 1);
+            _onFigureRemoved.Notify(index);
         }
+
         private bool IsIndexValid(int index)
         {
             if (_figureSpriteViews.Count > index) 
@@ -168,62 +150,27 @@ namespace Game.Core.Figures.Tower
             Debug.LogError("List of views in tower was corrupted");
             return false;
         }
-        private void HandleLastFigureRemoval(int index)
-        {
-            Transform newLastFigure = index > 0 
-                ? _figureSpriteViews[index - 1].transform 
-                : null;
-    
-            _towerView.SetLastViewTransform(newLastFigure);
-        }
-        private void HandleNonLastFigureRemoval(int index, FigureSpriteView viewToRemove)
-        {
-            var nextViewInTower = _figureSpriteViews[index + 1];
-            var nextViewTransform = nextViewInTower.transform;
-            nextViewTransform.parent = viewToRemove.transform.parent;
-                
-            var nextViewPosition = nextViewTransform.localPosition;
-            var newNextViewPosition = new Vector2(nextViewPosition.x, nextViewPosition.y - viewToRemove.transform.localScale.y * 2);
-            _figuresAnimator.DoDropAnimation(nextViewTransform, newNextViewPosition);
-        }
 
         private void OnInteractWithFigure(FigureData figureData)
         {
             var dragData = new DragFigureData(figureData, OnComplete, DragFigureSource.Tower);
             _onNewDragFigureData.Notify(dragData);
             _listOfFiguresData.RemoveData(figureData);
+            
             void OnComplete(DropResult result)
             {
+                //Some logic
             }
         }
 
-        private void LogFigureRemove(int index)
-        {
-            var listOfLogStrings = new List<string>()
-            {
-                "Фигура под номером",
-                index.ToString(),
-                "была убрана"
-            };
-            _onNewLogs.Notify(new LocalizableLogData(listOfLogStrings));
-        }
-
-        private void LogFigureOutOfRange()
-        {
-            var listOfLogStrings = new List<string>(){ "Фигура не помещается в границах экрана" };
-            _onNewLogs.Notify(new LocalizableLogData(listOfLogStrings));
-        }
-
-        private void LogNewFigureAdded()
-        {
-            var listOfLogStrings = new List<string>(){"Была поставлена новая фиугра"};
-            _onNewLogs.Notify(new LocalizableLogData(listOfLogStrings));
-        }
         public void Dispose()
         {
             _compositeDisposable?.Dispose();
             _onNewDragFigureData?.Dispose();
+            _onNewFigureAdded?.Dispose();
+            _onFigureRemoved?.Dispose();
+            _onStartDragFigure?.Dispose();
+            _onFigureOutOfRange?.Dispose();
         }
-
     }
 }
