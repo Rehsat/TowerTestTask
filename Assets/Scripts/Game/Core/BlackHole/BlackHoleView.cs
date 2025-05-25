@@ -28,7 +28,7 @@ namespace Game.Core.BlackHole
                 .SetEase(Ease.InBack)
                 .OnComplete(() => onComplete?.Invoke());
             transformToAnimate
-                .DORotate(startEulerAngles, _secondsToSuck / 5)
+                .DORotate(startEulerAngles, _secondsToSuck / 3)
                 .SetEase(Ease.OutBack);
         }
 

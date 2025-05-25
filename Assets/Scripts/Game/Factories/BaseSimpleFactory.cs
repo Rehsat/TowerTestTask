@@ -18,9 +18,10 @@ namespace Game.Factories
         public TPrefabType Create()
         {
             var instantinatedObject = Object.Instantiate(
-                _prefab, 
-                _spawnPosition, //может быть null, не вижу в этом проблем
-                true); 
+                _prefab,
+                _spawnPosition,
+                true); //может быть null, не вижу в этом проблем
+                
             if(instantinatedObject is IConstructable constructable)
                 constructable.Construct();
             

@@ -140,9 +140,9 @@ RectTransform:
   m_Father: {fileID: 1193648487539747559}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0002687239, y: 0.000015258789}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -0.0000000098771, y: -13.8359375}
+  m_SizeDelta: {x: 0, y: -27.672}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5995932130003709514
 MonoBehaviour:
@@ -162,11 +162,11 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 44.5
+  m_Spacing: 44
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
+  m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -194,6 +194,8 @@ GameObject:
   m_Component:
   - component: {fileID: 650396854753050166}
   - component: {fileID: 7394951135540893092}
+  - component: {fileID: 1864969208382050830}
+  - component: {fileID: 1198337593037570741}
   m_Layer: 5
   m_Name: FigureScrollView
   m_TagString: Untagged
@@ -235,6 +237,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scrollRect: {fileID: 4017457159217458015}
   _figuresRoot: {fileID: 5995932130003709514}
+--- !u!114 &1864969208382050830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2707263806204557151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed2c2d2aa3c49cf48bd5adea0e3ab880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _changeables:
+  - {fileID: 1198337593037570741}
+--- !u!114 &1198337593037570741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2707263806204557151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 721f0dfac9b743e5b9310b36d962efc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _byAspectChangeMultiplier: 85
+  _layoutGroupToChangeSpacing: {fileID: 5995932130003709514}
 --- !u!1 &5165269617234445333
 GameObject:
   m_ObjectHideFlags: 0

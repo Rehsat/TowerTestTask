@@ -71,7 +71,7 @@ namespace Game.Services.DragAndDrop
             }
             _draggableCompositeDisposable = new CompositeDisposable();
 
-            newDraggable.TransformToDrag.SetParent(_canvasRectTransform.transform);
+            newDraggable.TransformToDrag.SetParent(_canvasRectTransform.transform, false);
             _inputService.OnInputUpdate
                 .Subscribe(OnInputUpdate)
                 .AddTo(_draggableCompositeDisposable);

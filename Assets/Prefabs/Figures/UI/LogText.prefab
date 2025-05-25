@@ -122,11 +122,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3427999813396832346, guid: e237addca149b2c42a68f5578b664c4c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.0010986328
+      value: 0.099975586
       objectReference: {fileID: 0}
     - target: {fileID: 3427999813396832346, guid: e237addca149b2c42a68f5578b664c4c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0002670288
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3427999813396832346, guid: e237addca149b2c42a68f5578b664c4c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -175,6 +175,10 @@ PrefabInstance:
     - target: {fileID: 8570762173476672829, guid: e237addca149b2c42a68f5578b664c4c, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4278190080
+      objectReference: {fileID: 0}
+    - target: {fileID: 8570762173476672829, guid: e237addca149b2c42a68f5578b664c4c, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 1024
       objectReference: {fileID: 0}
     - target: {fileID: 8570762173476672829, guid: e237addca149b2c42a68f5578b664c4c, type: 3}
       propertyPath: m_enableWordWrapping

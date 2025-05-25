@@ -55,10 +55,7 @@ namespace Game.Core.Figures.Tower
                 .DOScale(resultScale, 0.3f)
                 .SetEase(Ease.OutBack)
                 .OnKill(() =>
-                {
-                    Debug.LogError(123);
-                    transformToAnimate.localScale = resultScale;
-                });
+                    transformToAnimate.localScale = resultScale);
         }
 
         private void ResetSequence()

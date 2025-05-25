@@ -33,13 +33,16 @@ namespace Game.Core.Figures
         {
             DragStartPosition = _transformToDrag.position;
             _transformToDrag.gameObject.SetActive(true);
-            _transformToDrag.localScale = Vector3.one;
+            
+            _transformToDrag.localScale = Vector3.one * 0.5f;
+            _transformToDrag
+                .DOScale(1, 0.3f)
+                .SetEase(Ease.OutCubic);
         }
 
         public void DoSuccessDropAnimation(Action onComplete)
         {
             DragEndPosition = _transformToDrag.position;
-            
             if (_getDropAnimation == null)
             {
                 OnDropAnimationComplete(onComplete);
