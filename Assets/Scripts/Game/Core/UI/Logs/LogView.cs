@@ -17,11 +17,20 @@ namespace Game.Core.UI.Logs
         {
             _compositeDisposable?.Dispose();
             _compositeDisposable = new CompositeDisposable();
-
-            _logText.DOKill();
+            
             _logText.gameObject.SetActive(true);
             _logText.text = log;
+            
+            _logText.DOKill();
+            _logText.transform.DOKill();
+
+            var startTransform = transform.localScale;
             _logText.DOFade(1,0);
+            _logText.transform
+                .DOScale(startTransform * 1.05f, 0.2f)
+                .SetLoops(2, LoopType.Yoyo)
+                .OnKill(() => transform.localScale = startTransform);
+            
             Observable.Timer(TimeSpan.FromSeconds(_secondToHide)).Subscribe((l =>
             {
                 _logText.DOFade(0,_secondsToFade);
