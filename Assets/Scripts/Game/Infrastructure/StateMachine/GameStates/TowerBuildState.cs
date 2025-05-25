@@ -65,7 +65,6 @@ namespace Game.Infrastructure.StateMachine.GameStates
             _figuresListsProvider = figuresListsProvider;
             _currentLevelDataProvider = currentLevelDataProvider;
             _ofScreenCheckService = ofScreenCheckService;
-            
             _figureSpriteViewFactory = figureSpriteViewFactory;
             _towerViewFactory = towerViewFactory;
             _blackHoleFactory = blackHoleFactory;

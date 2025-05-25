@@ -63,6 +63,7 @@ namespace Game.Core.Figures.Tower
         private void Initialize()
         {
             _listOfFiguresData.FigureDatas.ToList().ForEach(ShowDataInTower);
+            _figuresAnimator.KillCurrentAnimation();
             
             _listOfFiguresData.FigureDatas
                 .ObserveAdd()

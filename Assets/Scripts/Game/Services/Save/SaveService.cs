@@ -11,6 +11,8 @@ namespace Game.Services.Save
     public class SaveService : ISaveService
     {
         private readonly IDataSerializer _dataSerializer;
+
+        private bool _saveWillBeInNextFrame;
         private Dictionary<SaveDataId, ISavable> _saveables;
 
         private const string SAVE_KEY = "SAVE_KEY";
@@ -19,21 +21,28 @@ namespace Game.Services.Save
         {
             _dataSerializer = dataSerializer;
             _saveables = new Dictionary<SaveDataId, ISavable>();
-            savables.ForEach(savable => _saveables.Add(savable.Id, savable));
+            savables.ForEach(InitSavablle);
 
             //При необходимости можно будет добавить более сложную логику сейвов
-            Observable.Interval(TimeSpan.FromSeconds(3)).Subscribe((l => Save()));
+            Observable.Interval(TimeSpan.FromSeconds(3)).Subscribe((l => StartSave()));
         }
-        
-        public void Save()
+
+        private void InitSavablle(ISavable savable)
         {
-            var saveData = new SaveData();
-            foreach (var keyValuePair in _saveables)
+            _saveables.Add(savable.Id, savable);
+            if (savable is ISaveRequier saveRequier)
+                saveRequier.OnSaveRequired.SubscribeWithSkip(StartSave);
+        }
+        public void StartSave()
+        {
+            if(_saveWillBeInNextFrame) return;
+            _saveWillBeInNextFrame = true;
+
+            Observable.TimerFrame(1).Subscribe(f =>
             {
-                keyValuePair.Value.Save(saveData);
-            }
-            var saveDataSerialized = _dataSerializer.Serialize(saveData);
-            PlayerPrefs.SetString(SAVE_KEY, saveDataSerialized);
+                _saveWillBeInNextFrame = false;
+                Save();
+            });
         }
 
         public void Load()
@@ -46,6 +55,16 @@ namespace Game.Services.Save
             {
                 saveablesValue.Load(savedData);
             }
+        }
+        
+        private void Save()
+        {
+            var saveData = new SaveData();
+            foreach (var keyValuePair in _saveables)
+                keyValuePair.Value.Save(saveData);
+            
+            var saveDataSerialized = _dataSerializer.Serialize(saveData);
+            PlayerPrefs.SetString(SAVE_KEY, saveDataSerialized);
         }
         
     }

@@ -92,10 +92,9 @@ namespace Game.Core.Figures.View.UI
 
         private void TryStartDragFigure(FigureData figureData)
         {
-            var yDeltaChangeTolerance = 1;
-            var deltaDifference = _inputService.PointerDelta.y - Math.Abs(_inputService.PointerDelta.x);
-            var userTriedToDrag = _inputService.PointerDelta.y > yDeltaChangeTolerance;
-            Debug.LogError(_inputService.PointerDelta.y);
+            var yMoveTolerance = 1;
+            var userTriedToDrag = _inputService.PointerDelta.y > yMoveTolerance;
+            
             if (userTriedToDrag)
                 StartDragFigure(figureData);
         }

@@ -2,7 +2,7 @@ namespace Game.Services.Save
 {
     public interface ISaveService
     {
-        public void Save();
+        public void StartSave();
         public void Load();
     }
 }
