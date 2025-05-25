@@ -264,7 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _byAspectChangeMultiplier: 85
-  _layoutGroupToChangeSpacing: {fileID: 5995932130003709514}
+  _layoutGroupToChange: {fileID: 5995932130003709514}
 --- !u!1 &5165269617234445333
 GameObject:
   m_ObjectHideFlags: 0

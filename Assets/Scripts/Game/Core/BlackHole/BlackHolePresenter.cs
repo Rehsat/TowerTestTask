@@ -12,15 +12,14 @@ using Zenject;
 
 namespace Game.Core.BlackHole
 {
-    public class BlackHolePresenter : IDisposable, ILogsCreator
+    public class BlackHolePresenter : IDisposable
     {
         private readonly IBlackHoleView _blackHoleView;
         private readonly IFactory<FigureData, FigureSpriteView> _figuresFactory;
-        private CompositeDisposable _compositeDisposable;
-        
-        private ReactiveEvent<LocalizableLogData> _onNewLog;
-        public IReadOnlyReactiveEvent<LocalizableLogData> OnNewLogs => _onNewLog;
-        
+        private readonly ReactiveEvent<DragFigureData> _onFigureSucked;
+        private readonly CompositeDisposable _compositeDisposable;
+        public ReactiveEvent<DragFigureData> OnFigureSucked => _onFigureSucked;
+
         public BlackHolePresenter(
             IBlackHoleView blackHoleView, 
             IFactory<FigureData, FigureSpriteView> figuresFactory)
@@ -28,7 +27,7 @@ namespace Game.Core.BlackHole
             _blackHoleView = blackHoleView;
             _figuresFactory = figuresFactory;
             
-            _onNewLog = new ReactiveEvent<LocalizableLogData>();
+            _onFigureSucked = new ReactiveEvent<DragFigureData>();
             _compositeDisposable = new CompositeDisposable();
             _blackHoleView.OnDroppedNewObject
                 .SubscribeWithSkip(OnDroppedNewObject)
@@ -58,20 +57,15 @@ namespace Game.Core.BlackHole
             var newFigureSprite = _figuresFactory.Create(dragFigureData.FigureData);
             newFigureSprite.SetMaskMode(SpriteMaskInteraction.VisibleInsideMask); // думаю в теории это можно перенести во вьюху
             _blackHoleView.DoSuckAnimation(newFigureSprite.transform, OnSuckComplete);
-            
             draggableView.DragComplete(DropResult.Success);
+            
             void OnSuckComplete()
             {
                 newFigureSprite.ReturnToPool();
-                LogFigureDestroyed();
+                _onFigureSucked.Notify(dragFigureData);
             }
         }
         
-        private void LogFigureDestroyed()
-        {
-            var listOfLogStrings = new List<string>(){"Фигура умерла страшной смертью в пасти черной дыры. Ты ужасен!"};
-            _onNewLog.Notify(new LocalizableLogData(listOfLogStrings));
-        }
         public void Dispose()
         {
             _compositeDisposable?.Dispose();

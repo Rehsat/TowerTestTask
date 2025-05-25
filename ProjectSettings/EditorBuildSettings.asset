@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
     guid: 8e6ae81b688c6454c965768a254f60f5
+  - enabled: 1
+    path: Assets/Scenes/DONT ENTER THIS SCENE. ITS NOT WORTH IT.unity
+    guid: a8b6671313b69cf4badfdac1b5fea617
   m_configObjects: {}

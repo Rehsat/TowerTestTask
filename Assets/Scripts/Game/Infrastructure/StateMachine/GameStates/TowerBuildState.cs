@@ -116,8 +116,8 @@ namespace Game.Infrastructure.StateMachine.GameStates
         private void InitializeBlackHole()
         {
             var blackHolePresenter =_blackHolePresenterFactory.Create();
-            
-            _logsCreators.Add(blackHolePresenter);
+            var blackHoleLogsCreator = new BlackHoleLogger(blackHolePresenter);
+            _logsCreators.Add(blackHoleLogsCreator);
         }
 
         private void InitializeLogger()
