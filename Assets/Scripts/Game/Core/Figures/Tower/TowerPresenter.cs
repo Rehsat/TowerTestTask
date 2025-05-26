@@ -63,7 +63,7 @@ namespace Game.Core.Figures.Tower
         private void Initialize()
         {
             _listOfFiguresData.FigureDatas.ToList().ForEach(ShowDataInTower);
-            _figuresAnimator.KillCurrentAnimation();
+            _figuresAnimator.Enable();
             
             _listOfFiguresData.FigureDatas
                 .ObserveAdd()
@@ -114,7 +114,6 @@ namespace Game.Core.Figures.Tower
         private void ShowDataInTower(FigureData figureData)
         {
             var view = _figureSpriteViewFactory.Create(figureData);
-            view.name = view.name + _figureSpriteViews.Count;
             view.SetInteractableData(figureData, _onStartDragFigure);
         
             AddFigureViewToList(figureData, view);
@@ -122,8 +121,8 @@ namespace Game.Core.Figures.Tower
 
         private void AddFigureViewToList(FigureData figureData, FigureSpriteView figureSpriteView)
         {
-            _figureSpriteViews.Add(figureSpriteView);
             var offset = new Vector2(figureData.XMovementPercent, 0);
+            _figureSpriteViews.Add(figureSpriteView);
             _towerBuilder.PlaceNewElementInTower(figureSpriteView.transform, offset);
             _onNewFigureAdded.Notify(figureData);
         }
@@ -152,14 +151,9 @@ namespace Game.Core.Figures.Tower
 
         private void OnInteractWithFigure(FigureData figureData)
         {
-            var dragData = new DragFigureData(figureData, OnComplete, DragFigureSource.Tower);
+            var dragData = new DragFigureData(figureData, null, DragFigureSource.Tower);
             _onNewDragFigureData.Notify(dragData);
             _listOfFiguresData.RemoveData(figureData);
-            
-            void OnComplete(DropResult result)
-            {
-                //Some logic
-            }
         }
 
         public void Dispose()

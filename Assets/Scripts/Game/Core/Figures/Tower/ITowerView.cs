@@ -1,6 +1,4 @@
-﻿using EasyFramework.ReactiveEvents;
-using Game.Services.DragAndDrop;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game.Core.Figures.Tower
 {
@@ -9,10 +7,5 @@ namespace Game.Core.Figures.Tower
         public Transform DropContainerTransform { get; }
         public void SetLastViewTransform(Transform transform);
         public void PlaceFirstViewTransform(Transform transform);
-    }
-
-    public interface IDropHandler
-    {
-        public IReadOnlyReactiveEvent<IDraggable> OnDroppedNewObject { get; }
     }
 }

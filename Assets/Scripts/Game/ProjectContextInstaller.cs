@@ -95,6 +95,7 @@ namespace Game
             Container.Bind<ILocalizationService>().To<MockLocalizationService>().FromNew().AsSingle();
             Container.Bind<ILogService>().To<LogService>().FromNew().AsSingle();
             Container.Bind<IDataSerializer>().To<JsonDataSerializer>().FromNew().AsSingle();
+            Container.Bind<IWorldCursorPositionProvider>().To<WorldCursorPositionProvider>().FromNew().AsSingle();
             
             Container.Bind<IInteractService>().To<InteractService>().FromNew().AsSingle().NonLazy();
             Container.Bind<ISaveService>().To<SaveService>().FromNew().AsSingle();

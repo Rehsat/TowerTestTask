@@ -18,7 +18,6 @@ namespace Game.Core.Figures.Tower
 
         public void PlaceNewElementInTower(Transform elementTransform, Vector2 offset)
         {
-            _figuresAnimator.KillCurrentAnimation();
             if (_towerElements.Count > 0)
                 ConnectViewToLast(offset, elementTransform);
             else
@@ -26,6 +25,7 @@ namespace Game.Core.Figures.Tower
 
             _towerView.SetLastViewTransform(elementTransform);
             _towerElements.Add(elementTransform);
+            elementTransform.localScale = Vector3.one;
             _figuresAnimator.DoJumpAnimation(elementTransform);
         }
 
@@ -34,9 +34,7 @@ namespace Game.Core.Figures.Tower
             if (IsIndexValid(index) == false)
                 return;
 
-            _figuresAnimator.KillCurrentAnimation();
             var isLastElement = _towerElements.Count - 1 == index;
-
             RemoveElementViewFromTower(index, isLastElement);
             _towerElements.RemoveAt(index);
         }
@@ -46,7 +44,7 @@ namespace Game.Core.Figures.Tower
             var currentLastView = _towerElements[^1];
             var xPosition = currentLastView.localScale.x * (offsetPercent.x / 100f);
 
-            figureSpriteView.parent = currentLastView;
+            figureSpriteView.SetParent(currentLastView, false);
             figureSpriteView.localPosition =
                 new Vector2(xPosition, currentLastView.localScale.y) * 2;
         }
@@ -84,7 +82,7 @@ namespace Game.Core.Figures.Tower
             nextViewInTower.parent = viewToRemove.parent;
 
             var nextViewPosition = nextViewInTower.localPosition;
-            var newNextViewPosition =
+            var newNextViewPosition = //viewToRemove.transform.localPosition;
                 new Vector2(nextViewPosition.x, nextViewPosition.y - viewToRemove.localScale.y * 2);
             _figuresAnimator.DoDropAnimation(nextViewInTower, newNextViewPosition);
 

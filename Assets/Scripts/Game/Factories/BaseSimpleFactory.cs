@@ -24,11 +24,13 @@ namespace Game.Factories
                 
             if(instantinatedObject is IConstructable constructable)
                 constructable.Construct();
-            
+
+            DoAdditionalConstruct(instantinatedObject);
             return instantinatedObject;
         }
 
         protected abstract Prefab GetPrefabType();
+        protected virtual void DoAdditionalConstruct(TPrefabType prefab){}
     }
 
     public interface IConstructable

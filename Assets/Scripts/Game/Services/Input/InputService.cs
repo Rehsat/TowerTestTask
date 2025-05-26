@@ -33,7 +33,8 @@ namespace Game.Services.Input
 
             Observable
                 .EveryUpdate()
-                .Subscribe(f => _onInputUpdate.Notify())
+                .Subscribe(f =>
+                    _onInputUpdate.Notify())
                 .AddTo(_compositeDisposable);
         }
 

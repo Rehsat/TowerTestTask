@@ -98,6 +98,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DropCollider
       objectReference: {fileID: 0}
+    - target: {fileID: 7180253874385078560, guid: 0d8cbc9c7216b4f4aa34d5a677a0967b, type: 3}
+      propertyPath: m_Size.y
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
