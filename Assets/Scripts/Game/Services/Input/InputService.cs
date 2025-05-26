@@ -16,8 +16,13 @@ namespace Game.Services.Input
 
         public IReadOnlyReactiveEvent<ActionState> OnDragActionStateChanged => _onDragActionStateChanged;
         public IReadOnlyReactiveTrigger OnInputUpdate => _onInputUpdate;
-        public Vector2 PointerPosition => Mouse.current.position.ReadValue();
-        public Vector2 PointerDelta => Mouse.current.delta.ReadValue();
+        public Vector2 PointerPosition => Touchscreen.current != null && Touchscreen.current.primaryTouch.isInProgress 
+            ? Touchscreen.current.primaryTouch.position.ReadValue() 
+            : Mouse.current?.position.ReadValue() ?? Vector2.zero;
+        
+        public Vector2 PointerDelta => Touchscreen.current != null && Touchscreen.current.primaryTouch.isInProgress 
+            ? Touchscreen.current.primaryTouch.delta.ReadValue() 
+            : Mouse.current?.delta.ReadValue() ?? Vector2.zero;
 
         public InputService()
         {
