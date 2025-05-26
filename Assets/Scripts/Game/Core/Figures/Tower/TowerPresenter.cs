@@ -129,24 +129,12 @@ namespace Game.Core.Figures.Tower
 
         private void OnDataRemoved(int index)
         {
-            if (IsIndexValid(index) == false) 
-                return;
-
             var viewToRemove = _figureSpriteViews[index];
             _towerBuilder.RemoveFromTower(index);
         
             _figureSpriteViews.RemoveAt(index);
             viewToRemove.ReturnToPool();
             _onFigureRemoved.Notify(index);
-        }
-
-        private bool IsIndexValid(int index)
-        {
-            if (_figureSpriteViews.Count > index) 
-                return true;
-    
-            Debug.LogError("List of views in tower was corrupted");
-            return false;
         }
 
         private void OnInteractWithFigure(FigureData figureData)
