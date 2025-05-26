@@ -35,12 +35,13 @@ namespace Game.Core.Figures.Tower
             
             var lastViewPosition = lastViewTransform.position;
             var lastViewScale = lastViewTransform.localScale;
-            
+
+            var additionalDropContainerHeight = -1;
             _dropContainer.transform.localScale = lastViewScale;
             _dropContainer.transform.position = 
                 new Vector2(
                     lastViewPosition.x,
-                 lastViewPosition.y + lastViewScale.y);
+                 lastViewPosition.y + lastViewScale.y - additionalDropContainerHeight);
             _dropContainer.transform.SetParent(lastViewTransform, false);
         }
 
